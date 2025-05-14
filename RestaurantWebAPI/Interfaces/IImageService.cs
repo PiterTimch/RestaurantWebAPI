@@ -1,4 +1,4 @@
-﻿namespace RestaurantWebAPI.Interface;
+﻿namespace RestaurantWebAPI.Interfaces;
 
 public interface IImageService
 {

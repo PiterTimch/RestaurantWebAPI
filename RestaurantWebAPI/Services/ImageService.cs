@@ -1,4 +1,4 @@
-﻿using RestaurantWebAPI.Interface;
+﻿using RestaurantWebAPI.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;

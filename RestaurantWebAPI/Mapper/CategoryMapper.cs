@@ -11,5 +11,8 @@ public class CategoryMapper : Profile
         CreateMap<SeederCategoryModel, CategoryEntity>();
         CreateMap<CategoryItemModel, CategoryEntity>()
             .ReverseMap();
+
+        CreateMap<CategoryCreateModel, CategoryEntity>()
+            .ForMember(x => x.Image, opt => opt.Ignore());
     }
 }

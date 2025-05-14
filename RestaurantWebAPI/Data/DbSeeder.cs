@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Data.Entities;
-using RestaurantWebAPI.Interface;
+using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Seeder;
 using System.Text.Json;
 
