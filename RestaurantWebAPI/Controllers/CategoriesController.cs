@@ -36,5 +36,23 @@ namespace RestaurantWebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromForm] CategoryEditModel model) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await categoriesService.UpdateAsync(model);
+
+            if (result == null)
+            {
+                return BadRequest("Invalid update model");
+            }
+
+            return Ok(result);
+        }
     }
 }

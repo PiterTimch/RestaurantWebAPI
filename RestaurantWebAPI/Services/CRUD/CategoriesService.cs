@@ -29,6 +29,29 @@ public class CategoriesService(AppDbRestaurantContext context,
         return entity;
     }
 
+    public async Task<CategoryEntity> UpdateAsync(CategoryEditModel model) 
+    {
+        var existing = await context.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (existing == null)
+            return null;
+
+        var duplicate = await context.Categories
+                .FirstOrDefaultAsync(x => x.Name == model.Name && x.Id != model.Id);
+        if (duplicate != null)
+            return null;
+
+        existing = mapper.Map(model, existing);
+
+        if (model.ImageFile != null)
+        {
+            await imageService.DeleteImageAsync(existing.Image);
+            existing.Image = await imageService.SaveImageAsync(model.ImageFile);
+        }
+        await context.SaveChangesAsync();
+
+        return existing;
+    }
+
     public async Task<IEnumerable<CategoryItemModel>> GetAllAsync()
     {
         var model = await mapper.ProjectTo<CategoryItemModel>(context.Categories).ToListAsync();
