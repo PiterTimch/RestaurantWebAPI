@@ -49,10 +49,36 @@ namespace RestaurantWebAPI.Controllers
 
             if (result == null)
             {
-                return BadRequest("Invalid update model");
+                return BadRequest("The name and slug must be unique");
             }
 
             return Ok(result);
         }
+
+        [HttpGet("{slug}")]
+        public async Task<IActionResult> GetBySlug(string slug)
+        {
+            var category = await categoriesService.GetBySlugAsync(slug);
+
+            if (category == null)
+            {
+                return NotFound($"Invalid category with slug: {slug}");
+            }
+
+            return Ok(category);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await categoriesService.GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound($"Invalid category with id: {id}");
+            }
+            await categoriesService.DeleteAsync(id);
+            return Ok($"Category with id: {id} deleted");
+        }
+
     }
 }

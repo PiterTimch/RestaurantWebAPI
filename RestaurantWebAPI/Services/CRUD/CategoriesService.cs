@@ -19,6 +19,8 @@ public class CategoriesService(AppDbRestaurantContext context,
             return null;
         }
 
+        model.Slug = model.Slug.Trim().ToLower().Replace(" ", "-");
+
         entity = mapper.Map<CategoryEntity>(model);
         if (model.ImageFile != null)
             entity.Image = await imageService.SaveImageAsync(model.ImageFile);
@@ -35,8 +37,12 @@ public class CategoriesService(AppDbRestaurantContext context,
         if (existing == null)
             return null;
 
+        model.Slug = model.Slug.Trim().ToLower().Replace(" ", "-");
+
         var duplicate = await context.Categories
                 .FirstOrDefaultAsync(x => x.Name == model.Name && x.Id != model.Id);
+        duplicate = await context.Categories
+                .FirstOrDefaultAsync(x => x.Slug == model.Slug && x.Id != model.Id);
         if (duplicate != null)
             return null;
 
@@ -62,5 +68,27 @@ public class CategoriesService(AppDbRestaurantContext context,
     {
         var model = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         return model;
+    }
+
+    public async Task<CategoryEntity> GetBySlugAsync(string slug)
+    {
+        return await context.Categories
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Slug == slug);
+    }
+
+    public Task DeleteAsync(int id)
+    {
+        var entity = context.Categories.FirstOrDefault(x => x.Id == id);
+        if (entity != null)
+        {
+            if (entity.Image != null)
+            {
+                imageService.DeleteImageAsync(entity.Image);
+            }
+            context.Categories.Remove(entity);
+            return context.SaveChangesAsync();
+        }
+        return Task.CompletedTask;
     }
 }
