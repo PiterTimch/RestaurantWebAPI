@@ -1,10 +1,14 @@
 using AutoMapper;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using RestaurantWebAPI.Data;
+using RestaurantWebAPI.Filters;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Services;
 using RestaurantWebAPI.Services.CRUD;
+using RestaurantWebAPI.Validators.Category;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,18 @@ builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// Add FluentValidation
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
 
 builder.Services.AddCors();
 

@@ -23,15 +23,11 @@ namespace RestaurantWebAPI.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await categoriesService.CreateAsync(model);
 
             if (result == null)
             {
-                return BadRequest("Category already exists");
+                return BadRequest($"{model.Name} already exists");
             }
 
             return Ok(result);
@@ -40,16 +36,11 @@ namespace RestaurantWebAPI.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromForm] CategoryEditModel model) 
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await categoriesService.UpdateAsync(model);
 
             if (result == null)
             {
-                return BadRequest("The name and slug must be unique");
+                return BadRequest("Invalid update");
             }
 
             return Ok(result);
