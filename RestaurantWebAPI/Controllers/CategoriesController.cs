@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace RestaurantWebAPI.Controllers
         public async Task<IActionResult> List()
         {
             var model = await categoriesService.GetAllAsync();
+
             return Ok(model);
         }
 
@@ -25,12 +27,10 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await categoriesService.CreateAsync(model);
 
-            if (result == null)
-            {
-                return BadRequest($"{model.Name} already exists");
-            }
+            if (result.IsFailed)
+                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         [HttpPost("update")]
@@ -38,10 +38,8 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await categoriesService.UpdateAsync(model);
 
-            if (result == null)
-            {
-                return BadRequest("Invalid update");
-            }
+            if (result.IsFailed)
+                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
 
             return Ok(result);
         }
@@ -49,27 +47,28 @@ namespace RestaurantWebAPI.Controllers
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetBySlug(string slug)
         {
-            var category = await categoriesService.GetBySlugAsync(slug);
+            var result = await categoriesService.GetBySlugAsync(slug);
 
-            if (category == null)
-            {
-                return NotFound($"Invalid category with slug: {slug}");
-            }
+            if (result.IsFailed)
+                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
 
-            return Ok(category);
+            return Ok(result.Value);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await categoriesService.GetByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound($"Invalid category with id: {id}");
-            }
-            await categoriesService.DeleteAsync(id);
+            var result = await categoriesService.DeleteAsync(id);
+
+            if (result.IsFailed)
+                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
+
             return Ok($"Category with id: {id} deleted");
         }
 
+        private string ErrorsToString(IEnumerable<IError> errors)
+        {
+            return string.Join(", ", errors.Select(e => e.Message));
+        }
     }
 }
