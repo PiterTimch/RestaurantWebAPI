@@ -4,13 +4,22 @@ namespace RestaurantWebAPI.Validators.Helpers
 {
     public static class ResultExtensions
     {
-        public static IEnumerable<object> ToFieldErrors(this IEnumerable<IError> errors)
+        public static object ToFieldErrors(this IEnumerable<IError> errors)
         {
-            return errors.Select(e => new
+            var groupedErrors = errors
+                .Where(e => e.Metadata != null && e.Metadata.ContainsKey("Field"))
+                .GroupBy(e => e.Metadata["Field"]!.ToString())
+                .ToDictionary(
+                    g => g.Key!,
+                    g => g.Select(e => e.Message).ToArray()
+                );
+
+            return new
             {
-                field = e.Metadata != null && e.Metadata.ContainsKey("Field") ? e.Metadata["Field"].ToString() : "error",
-                error = e.Message
-            });
+                status = 400,
+                isValid = false,
+                errors = groupedErrors
+            };
         }
     }
 }
