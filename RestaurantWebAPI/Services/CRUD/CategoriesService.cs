@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Data;
@@ -14,9 +15,9 @@ public class CategoriesService(
     IMapper mapper,
     IImageService imageService) : ICategoriesService
 {
-    public async Task<Result<CategoryEntity>> CreateAsync(CategoryCreateModel model)
+    public async Task<Result<CategoryItemModel>> CreateAsync(CategoryCreateModel model)
     {
-        var result = new Result<CategoryEntity>();
+        var result = new Result<CategoryItemModel>();
         var errors = new List<Error>();
 
         var existingByName = await context.Categories
@@ -42,12 +43,13 @@ public class CategoriesService(
         await context.Categories.AddAsync(entity);
         await context.SaveChangesAsync();
 
-        return result.WithValue(entity);
+        var mapped = mapper.Map<CategoryItemModel>(entity);
+        return result.WithValue(mapped);
     }
 
-    public async Task<Result<CategoryEntity>> UpdateAsync(CategoryEditModel model)
+    public async Task<Result<CategoryItemModel>> UpdateAsync(CategoryEditModel model)
     {
-        var result = new Result<CategoryEntity>();
+        var result = new Result<CategoryItemModel>();
         var errors = new List<Error>();
 
         var existing = await context.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
@@ -78,32 +80,43 @@ public class CategoriesService(
         }
 
         await context.SaveChangesAsync();
-        return result.WithValue(existing);
+
+        var mapped = mapper.Map<CategoryItemModel>(existing);
+        return result.WithValue(mapped);
     }
 
-    public async Task<IEnumerable<CategoryEntity>> GetAllAsync()
+    public async Task<Result<CategoryItemModel>> GetByIdAsync(int id)
     {
-        var list = await context.Categories.ToListAsync();
-        return list;
-    }
-
-    public async Task<Result<CategoryEntity>> GetByIdAsync(int id)
-    {
-        var entity = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-        return entity == null
-            ? Result.Fail("Категорію не знайдено.")
-            : Result.Ok(entity);
-    }
-
-    public async Task<Result<CategoryEntity>> GetBySlugAsync(string slug)
-    {
-        var entity = await context.Categories
+        var model = await context.Categories
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Slug == slug);
+            .Where(x => x.Id == id)
+            .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
 
-        return entity == null
+        return model == null
+            ? Result.Fail("Категорію не знайдено.")
+            : Result.Ok(model);
+    }
+
+    public async Task<Result<CategoryItemModel>> GetBySlugAsync(string slug)
+    {
+        var model = await context.Categories
+            .AsNoTracking()
+            .Where(x => x.Slug == slug)
+            .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+
+        return model == null
             ? Result.Fail("Категорію за вказаним слагом не знайдено.")
-            : Result.Ok(entity);
+            : Result.Ok(model);
+    }
+
+    public async Task<IEnumerable<CategoryItemModel>> GetAllAsync()
+    {
+        return await context.Categories
+            .AsNoTracking()
+            .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<Result> DeleteAsync(int id)

@@ -34,7 +34,7 @@ namespace RestaurantWebAPI.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromForm] CategoryEditModel model) 
         {
             var result = await categoriesService.UpdateAsync(model);
@@ -42,7 +42,7 @@ namespace RestaurantWebAPI.Controllers
             if (result.IsFailed)
                 return BadRequest(result.Errors.ToFieldErrors());
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         [HttpGet("{slug}")]

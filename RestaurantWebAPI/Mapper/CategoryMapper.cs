@@ -13,10 +13,14 @@ public class CategoryMapper : Profile
             .ReverseMap();
 
         CreateMap<CategoryCreateModel, CategoryEntity>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name.Trim()))
+            .ForMember(x => x.Slug, opt => opt.MapFrom(x => x.Slug.Trim()))
             .ForMember(x => x.Image, opt => opt.Ignore());
-        
+
         CreateMap<CategoryEditModel, CategoryEntity>();
         CreateMap<CategoryEntity, CategoryEditModel>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name.Trim()))
+            .ForMember(x => x.Slug, opt => opt.MapFrom(x => x.Slug.Trim()))
             .ForMember(x => x.ImageFile, opt => opt.Ignore());
     }
 }
