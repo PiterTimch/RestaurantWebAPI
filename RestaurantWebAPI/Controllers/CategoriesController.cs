@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
+using RestaurantWebAPI.Validators.Helpers;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace RestaurantWebAPI.Controllers
             var result = await categoriesService.CreateAsync(model);
 
             if (result.IsFailed)
-                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
+                return BadRequest(result.Errors.ToFieldErrors());
 
             return Ok(result.Value);
         }
@@ -39,7 +40,7 @@ namespace RestaurantWebAPI.Controllers
             var result = await categoriesService.UpdateAsync(model);
 
             if (result.IsFailed)
-                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
+                return BadRequest(result.Errors.ToFieldErrors());
 
             return Ok(result);
         }

@@ -5,6 +5,7 @@ using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Data.Entities;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
+using RestaurantWebAPI.Validators.Helpers;
 
 namespace RestaurantWebAPI.Services.CRUD;
 
@@ -16,19 +17,18 @@ public class CategoriesService(
     public async Task<Result<CategoryEntity>> CreateAsync(CategoryCreateModel model)
     {
         var result = new Result<CategoryEntity>();
-
         var errors = new List<Error>();
 
         var existingByName = await context.Categories
             .SingleOrDefaultAsync(x => x.Name == model.Name);
         if (existingByName != null)
-            errors.Add(new Error("Категорія з таким іменем вже існує."));
+            errors.Add(ErrorHelper.FieldError("Категорія з таким іменем вже існує.", "Name"));
 
         var slug = model.Slug.Trim().ToLower().Replace(" ", "-");
         var existingBySlug = await context.Categories
             .SingleOrDefaultAsync(x => x.Slug == slug);
         if (existingBySlug != null)
-            errors.Add(new Error("Категорія з таким слагом вже існує."));
+            errors.Add(ErrorHelper.FieldError("Категорія з таким слагом вже існує.", "Slug"));
 
         if (errors.Any())
             return result.WithErrors(errors);
@@ -52,19 +52,19 @@ public class CategoriesService(
 
         var existing = await context.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
         if (existing == null)
-            return result.WithError("Категорію не знайдено.");
+            return result.WithError(ErrorHelper.FieldError("Категорію не знайдено.", "Id"));
 
         model.Slug = model.Slug.Trim().ToLower().Replace(" ", "-");
 
         var duplicateName = await context.Categories
             .FirstOrDefaultAsync(x => x.Name == model.Name && x.Id != model.Id);
         if (duplicateName != null)
-            errors.Add(new Error("Інша категорія з таким іменем вже існує."));
+            errors.Add(ErrorHelper.FieldError("Інша категорія з таким іменем вже існує.", "Name"));
 
         var duplicateSlug = await context.Categories
             .FirstOrDefaultAsync(x => x.Slug == model.Slug && x.Id != model.Id);
         if (duplicateSlug != null)
-            errors.Add(new Error("Інша категорія з таким слагом вже існує."));
+            errors.Add(ErrorHelper.FieldError("Інша категорія з таким слагом вже існує.", "Slug"));
 
         if (errors.Any())
             return result.WithErrors(errors);
