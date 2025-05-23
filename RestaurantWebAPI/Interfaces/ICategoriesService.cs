@@ -7,9 +7,9 @@ namespace RestaurantWebAPI.Interfaces;
 public interface ICategoriesService
 {
     Task<IEnumerable<CategoryItemModel>> GetAllAsync();
-    Task<Result<CategoryItemModel>> GetByIdAsync(int id);
-    Task<Result<CategoryItemModel>> GetBySlugAsync(string slug);
-    Task<Result<CategoryItemModel>> CreateAsync(CategoryCreateModel model);
-    Task<Result<CategoryItemModel>> UpdateAsync(CategoryEditModel model);
-    Task<Result> DeleteAsync(int id);
+    Task<CategoryItemModel> GetByIdAsync(int id);
+    Task<CategoryItemModel> GetBySlugAsync(string slug);
+    Task<CategoryItemModel> CreateAsync(CategoryCreateModel model);
+    Task<CategoryItemModel> UpdateAsync(CategoryEditModel model);
+    Task DeleteAsync(CategoryDeleteModel model);
 }

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
-using RestaurantWebAPI.Validators.Helpers;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -28,10 +27,7 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await categoriesService.CreateAsync(model);
 
-            if (result.IsFailed)
-                return BadRequest(result.Errors.ToFieldErrors());
-
-            return Ok(result.Value);
+            return Ok(result);
         }
 
         [HttpPut("update")]
@@ -39,10 +35,7 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await categoriesService.UpdateAsync(model);
 
-            if (result.IsFailed)
-                return BadRequest(result.Errors.ToFieldErrors());
-
-            return Ok(result.Value);
+            return Ok(result);
         }
 
         [HttpGet("{slug}")]
@@ -50,26 +43,14 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await categoriesService.GetBySlugAsync(slug);
 
-            if (result.IsFailed)
-                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
-
-            return Ok(result.Value);
+            return Ok(result);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete([FromBody] CategoryDeleteModel model)
         {
-            var result = await categoriesService.DeleteAsync(id);
-
-            if (result.IsFailed)
-                return BadRequest($"Errors: {ErrorsToString(result.Errors)}");
-
-            return Ok($"Category with id: {id} deleted");
-        }
-
-        private string ErrorsToString(IEnumerable<IError> errors)
-        {
-            return string.Join(", ", errors.Select(e => e.Message));
+            await categoriesService.DeleteAsync(model);
+            return Ok($"Category with id: {model.Id} deleted");
         }
     }
 }
