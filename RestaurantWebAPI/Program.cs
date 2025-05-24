@@ -1,9 +1,11 @@
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using RestaurantWebAPI.Data;
+using RestaurantWebAPI.Data.Entities.Identity;
 using RestaurantWebAPI.Filters;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Services;
@@ -15,7 +17,28 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddEndpointsApiExplorer();
+
+var assemblyName = typeof(Program).Assembly.GetName().Name;
+builder.Services.AddSwaggerGen(opt => 
+{
+    var fileDoc = $"{assemblyName}.xml";
+    var filePath = Path.Combine(AppContext.BaseDirectory, fileDoc);
+    opt.IncludeXmlComments(filePath);
+}
+);
+
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddIdentity<UserEntity, RoleEntity>(opt =>
+{
+    opt.Password.RequiredLength = 6;
+    opt.Password.RequireDigit = false;
+    opt.Password.RequireLowercase = false;
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<AppDbRestaurantContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddDbContext<AppDbRestaurantContext>(opt => 
 {
@@ -24,6 +47,7 @@ builder.Services.AddDbContext<AppDbRestaurantContext>(opt =>
 
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
