@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using RestaurantWebAPI.Data.Entities;
+﻿using RestaurantWebAPI.Data.Entities;
 using RestaurantWebAPI.Models.Category;
 
 namespace RestaurantWebAPI.Interfaces;

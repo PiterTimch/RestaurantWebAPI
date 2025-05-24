@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Data.Entities;
