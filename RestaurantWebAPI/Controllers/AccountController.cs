@@ -9,19 +9,16 @@ namespace RestaurantWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IJWTTokenService tokenService,
-        UserManager<UserEntity> userManager) : Controller
+    public class AccountController(IAccountService accountService) : Controller
     {
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            string result = await accountService.LoginAsync(model);
+            return Ok(new
             {
-                var token = await tokenService.CreateTokenAsync(user);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized("Invalid email or password");
+                Token = result
+            });
         }
     }
 }
