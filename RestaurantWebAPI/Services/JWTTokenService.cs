@@ -18,7 +18,8 @@ public class JWTTokenService(IConfiguration configuration,
         var claims = new List<Claim>
         {
             new Claim("email", user.Email),
-            new Claim("name", $"{user.FirstName} {user.LastName}")
+            new Claim("name", $"{user.FirstName} {user.LastName}"),
+            new Claim("image", user.Image != null? user.Image : "")
         };
 
         foreach (var role in await userManager.GetRolesAsync(user))
@@ -33,7 +34,7 @@ public class JWTTokenService(IConfiguration configuration,
 
         var sec = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddMinutes(5),
             signingCredentials: signingCredentials
         );
 
