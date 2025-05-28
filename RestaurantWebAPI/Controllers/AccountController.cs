@@ -20,5 +20,24 @@ namespace RestaurantWebAPI.Controllers
                 Token = result
             });
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] RegisterModel model)
+        {
+            string result = await accountService.RegisterAsync(model);
+            if (string.IsNullOrEmpty(result))
+            {
+                return BadRequest(new
+                {
+                    Status = 400,
+                    IsValid = false,
+                    Errors = new { Email = "Email already exists or invalid data." }
+                });
+            }
+            return Ok(new
+            {
+                Token = result
+            });
+        }
     }
 }

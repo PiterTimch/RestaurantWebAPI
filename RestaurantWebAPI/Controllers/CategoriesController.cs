@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RestaurantWebAPI.Constants;
 using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
@@ -23,7 +24,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
         {
             var result = await categoriesService.CreateAsync(model);
