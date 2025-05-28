@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Constants;
-using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
 
@@ -24,7 +19,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
         {
             var result = await categoriesService.CreateAsync(model);
@@ -33,7 +28,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update([FromForm] CategoryEditModel model) 
         {
             var result = await categoriesService.UpdateAsync(model);
@@ -50,7 +45,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpDelete("delete")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete([FromBody] CategoryDeleteModel model)
         {
             await categoriesService.DeleteAsync(model);

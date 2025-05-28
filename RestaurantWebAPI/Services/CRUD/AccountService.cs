@@ -11,6 +11,13 @@ namespace RestaurantWebAPI.Services.CRUD
         IMapper mapper,
         IImageService imageService) : IAccountService
     {
+        public async Task DeleteUserAsync(DeleteUserModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id.ToString());
+
+            await userManager.DeleteAsync(user);
+        }
+
         public async Task<string> LoginAsync(LoginModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
@@ -24,11 +31,7 @@ namespace RestaurantWebAPI.Services.CRUD
 
         public async Task<string> RegisterAsync(RegisterModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user != null)
-                return string.Empty;
-
-            user = mapper.Map<UserEntity>(model);
+            var user = mapper.Map<UserEntity>(model);
             if (model.ImageFile != null) 
             {
                 user.Image = await imageService.SaveImageAsync(model.ImageFile);

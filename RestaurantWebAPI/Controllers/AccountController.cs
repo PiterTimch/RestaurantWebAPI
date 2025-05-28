@@ -31,13 +31,20 @@ namespace RestaurantWebAPI.Controllers
                 {
                     Status = 400,
                     IsValid = false,
-                    Errors = new { Email = "Email already exists or invalid data." }
+                    Errors = new { Email = "Помилка пеєстрації" }
                 });
             }
             return Ok(new
             {
                 Token = result
             });
+        }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel model)
+        {
+            await accountService.DeleteUserAsync(model);
+            return Ok($"Користувача з id {model.Id} успішно видалено");
         }
     }
 }

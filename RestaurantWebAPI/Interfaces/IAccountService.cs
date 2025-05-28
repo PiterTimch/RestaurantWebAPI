@@ -6,5 +6,6 @@ namespace RestaurantWebAPI.Interfaces
     {
         public Task<string> LoginAsync(LoginModel model);
         public Task<string> RegisterAsync(RegisterModel model);
+        public Task DeleteUserAsync(DeleteUserModel model);
     }
 }
