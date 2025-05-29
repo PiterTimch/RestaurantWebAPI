@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using RestaurantWebAPI.Data;
-using RestaurantWebAPI.Data.Entities;
+using Domain;
+using Domain.Entities;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Category;
 

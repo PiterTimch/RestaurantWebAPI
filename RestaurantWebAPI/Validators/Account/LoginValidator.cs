@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain.Entities.Identity;
 using RestaurantWebAPI.Models.Account;
 
 namespace RestaurantWebAPI.Validators.Account;

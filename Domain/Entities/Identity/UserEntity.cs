@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace RestaurantWebAPI.Data.Entities.Identity;
+namespace Domain.Entities.Identity;
 
 public class UserEntity : IdentityUser<long>
 {

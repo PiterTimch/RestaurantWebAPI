@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain.Entities.Identity;
 using RestaurantWebAPI.Models.Account;
 using RestaurantWebAPI.Models.Seeder;
 

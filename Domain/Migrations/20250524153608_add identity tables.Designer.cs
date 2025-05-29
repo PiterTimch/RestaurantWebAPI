@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RestaurantWebAPI.Data;
+using Domain;
 
 #nullable disable
 
-namespace RestaurantWebAPI.Migrations
+namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbRestaurantContext))]
     [Migration("20250524153608_add identity tables")]
@@ -135,7 +135,7 @@ namespace RestaurantWebAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.CategoryEntity", b =>
+            modelBuilder.Entity("Domain.Entities.CategoryEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -169,7 +169,7 @@ namespace RestaurantWebAPI.Migrations
                     b.ToTable("tbl_categories");
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.RoleEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.RoleEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,7 +198,7 @@ namespace RestaurantWebAPI.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.UserEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.UserEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -274,7 +274,7 @@ namespace RestaurantWebAPI.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.UserRoleEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.UserRoleEntity", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<long>");
 
@@ -285,7 +285,7 @@ namespace RestaurantWebAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.RoleEntity", null)
+                    b.HasOne("Domain.Entities.Identity.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -294,7 +294,7 @@ namespace RestaurantWebAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.UserEntity", null)
+                    b.HasOne("Domain.Entities.Identity.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -303,7 +303,7 @@ namespace RestaurantWebAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.UserEntity", null)
+                    b.HasOne("Domain.Entities.Identity.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -312,22 +312,22 @@ namespace RestaurantWebAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.UserEntity", null)
+                    b.HasOne("Domain.Entities.Identity.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.UserRoleEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.UserRoleEntity", b =>
                 {
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.RoleEntity", "Role")
+                    b.HasOne("Domain.Entities.Identity.RoleEntity", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RestaurantWebAPI.Data.Entities.Identity.UserEntity", "User")
+                    b.HasOne("Domain.Entities.Identity.UserEntity", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -338,12 +338,12 @@ namespace RestaurantWebAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.RoleEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.RoleEntity", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.Identity.UserEntity", b =>
+            modelBuilder.Entity("Domain.Entities.Identity.UserEntity", b =>
                 {
                     b.Navigation("UserRoles");
                 });

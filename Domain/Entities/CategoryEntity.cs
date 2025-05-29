@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RestaurantWebAPI.Data.Entities;
+namespace Domain.Entities;
 
 [Table("tbl_categories")]
 public class CategoryEntity : BaseEntity<long>

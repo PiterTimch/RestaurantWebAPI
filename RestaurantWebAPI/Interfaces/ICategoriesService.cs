@@ -1,4 +1,4 @@
-﻿using RestaurantWebAPI.Data.Entities;
+﻿using Domain.Entities;
 using RestaurantWebAPI.Models.Category;
 
 namespace RestaurantWebAPI.Interfaces;

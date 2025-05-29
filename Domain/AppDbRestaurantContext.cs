@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using RestaurantWebAPI.Data.Entities;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain.Entities;
+using Domain.Entities.Identity;
 
-namespace RestaurantWebAPI.Data;
+namespace Domain;
 
 public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, long>
 {

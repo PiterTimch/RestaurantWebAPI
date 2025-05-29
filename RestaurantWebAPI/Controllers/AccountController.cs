@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain.Entities.Identity;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Account;
 using RestaurantWebAPI.Services;

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using RestaurantWebAPI.Data;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain;
+using Domain.Entities.Identity;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Account;
 

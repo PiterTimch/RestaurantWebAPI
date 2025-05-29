@@ -28,6 +28,10 @@
 	</ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Update="Helpers\JsonData\Users.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>

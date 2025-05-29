@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RestaurantWebAPI.Data;
+using Domain;
 
 #nullable disable
 
-namespace RestaurantWebAPI.Migrations
+namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbRestaurantContext))]
     [Migration("20250513165021_add tbl_categories")]
@@ -25,7 +25,7 @@ namespace RestaurantWebAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RestaurantWebAPI.Data.Entities.CategoryEntity", b =>
+            modelBuilder.Entity("Domain.Entities.CategoryEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

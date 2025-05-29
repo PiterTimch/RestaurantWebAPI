@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RestaurantWebAPI.Data.Entities;
+namespace Domain.Entities;
 
 public interface IEntity<T>
 {

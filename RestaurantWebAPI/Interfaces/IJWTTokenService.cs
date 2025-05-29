@@ -1,4 +1,4 @@
-﻿using RestaurantWebAPI.Data.Entities.Identity;
+﻿using Domain.Entities.Identity;
 
 namespace RestaurantWebAPI.Interfaces
 {

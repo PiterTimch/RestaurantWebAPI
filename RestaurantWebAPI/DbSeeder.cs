@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebAPI.Constants;
-using RestaurantWebAPI.Data.Entities;
-using RestaurantWebAPI.Data.Entities.Identity;
+using Domain;
+using Domain.Entities;
+using Domain.Entities.Identity;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Seeder;
 using System.Text.Json;
 
-namespace RestaurantWebAPI.Data;
+namespace RestaurantWebAPI;
 
 public static class DbSeeder
 {

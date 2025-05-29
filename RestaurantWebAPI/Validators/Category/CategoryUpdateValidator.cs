@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using RestaurantWebAPI.Data;
+using Domain;
 using RestaurantWebAPI.Models.Category;
 
 namespace RestaurantWebAPI.Validators.Category;
