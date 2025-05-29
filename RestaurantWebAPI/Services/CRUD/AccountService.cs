@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using RestaurantWebAPI.Data;
 using RestaurantWebAPI.Data.Entities.Identity;
 using RestaurantWebAPI.Interfaces;
 using RestaurantWebAPI.Models.Account;
@@ -9,13 +11,22 @@ namespace RestaurantWebAPI.Services.CRUD
     public class AccountService(IJWTTokenService tokenService,
         UserManager<UserEntity> userManager, 
         IMapper mapper,
-        IImageService imageService) : IAccountService
+        IImageService imageService,
+        AppDbRestaurantContext context) : IAccountService
     {
         public async Task DeleteUserAsync(DeleteUserModel model)
         {
             var user = await userManager.FindByIdAsync(model.Id.ToString());
 
             await userManager.DeleteAsync(user);
+        }
+
+        public async Task<List<UserItemModel>> GetAllUsersAsync()
+        {
+            var entities = await context.Users.ToListAsync();
+            var model = mapper.Map<List<UserItemModel>>(entities);
+
+            return model;
         }
 
         public async Task<string> LoginAsync(LoginModel model)

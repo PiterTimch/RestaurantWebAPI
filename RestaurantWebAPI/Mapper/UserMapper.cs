@@ -14,6 +14,8 @@ namespace RestaurantWebAPI.Mapper
 
             CreateMap<RegisterModel, UserEntity>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
+
+            CreateMap<UserEntity, UserItemModel>();
         }
     }
 }

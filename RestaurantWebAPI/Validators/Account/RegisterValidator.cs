@@ -19,7 +19,9 @@ public class RegisterValidator : AbstractValidator<RegisterModel>
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Електронна пошта є обов’язковою")
-            .EmailAddress().WithMessage("Некоректний формат електронної пошти")
+            .EmailAddress().WithMessage("Некоректний формат електронної пошти");
+
+        RuleFor(x => x.Email)
             .MustAsync(async (email, cancellation) =>
             {
                 var user = await userManager.FindByEmailAsync(email);
@@ -31,8 +33,8 @@ public class RegisterValidator : AbstractValidator<RegisterModel>
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Пароль є обов'язковим")
             .MinimumLength(6).WithMessage("Пароль повинен містити щонайменше 6 символів")
-            .Matches("[A-Z]").WithMessage("Пароль повинен містити хоча б одну велику літеру")
-            .Matches("[a-z]").WithMessage("Пароль повинен містити хоча б одну малу літеру")
+            .Matches("[A-Z]").WithMessage("Пароль повинен містити хоча б одну латинську велику літеру")
+            .Matches("[a-z]").WithMessage("Пароль повинен містити хоча б одну латинську малу літеру")
             .Matches("[0-9]").WithMessage("Пароль повинен містити хоча б одну цифру")
             .Matches("[^a-zA-Z0-9]").WithMessage("Пароль повинен містити хоча б один спеціальний символ");
 

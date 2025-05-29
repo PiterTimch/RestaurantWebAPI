@@ -11,6 +11,14 @@ namespace RestaurantWebAPI.Controllers
     [ApiController]
     public class AccountController(IAccountService accountService) : Controller
     {
+        [HttpGet("list")]
+        public async Task<IActionResult> GetAllUsers() 
+        {
+            var model = await accountService.GetAllUsersAsync();
+
+            return Ok(model);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {

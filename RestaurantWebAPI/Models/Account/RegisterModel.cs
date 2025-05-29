@@ -17,7 +17,7 @@
         /// <summary>
         /// Електрона пошта користувача
         /// </summary>
-        /// <example>admin@example.com</example>
+        /// <example>fedir@example.com</example>
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
