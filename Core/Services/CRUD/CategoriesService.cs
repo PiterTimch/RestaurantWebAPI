@@ -16,6 +16,10 @@ public class CategoriesService(
     public async Task<CategoryItemModel> CreateAsync(CategoryCreateModel model)
     {
         var entity = mapper.Map<CategoryEntity>(model);
+        if (model.ImageFile != null)
+        {
+            entity.Image = await imageService.SaveImageAsync(model.ImageFile);
+        }
         await context.Categories.AddAsync(entity);
         await context.SaveChangesAsync();
 

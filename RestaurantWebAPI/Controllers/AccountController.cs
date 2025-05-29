@@ -39,7 +39,7 @@ namespace RestaurantWebAPI.Controllers
                 {
                     Status = 400,
                     IsValid = false,
-                    Errors = new { Email = "Помилка пеєстрації" }
+                    Errors = new { Email = "Помилка реєстрації" }
                 });
             }
             return Ok(new

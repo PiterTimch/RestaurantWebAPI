@@ -16,6 +16,8 @@ using Core.Services;
 using Core.Services.CRUD;
 using Core.Validators.Category;
 using System.Text;
+using Core.Models.Account;
+using Core.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 
-var assemblyName = typeof(Program).Assembly.GetName().Name;
+var assemblyName = typeof(LoginModel).Assembly.GetName().Name;
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -60,16 +62,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 
-builder.Services.AddIdentity<UserEntity, RoleEntity>(opt =>
-{
-    opt.Password.RequiredLength = 6;
-    opt.Password.RequireDigit = false;
-    opt.Password.RequireLowercase = false;
-    opt.Password.RequireUppercase = false;
-    opt.Password.RequireNonAlphanumeric = false;
-})
-    .AddEntityFrameworkStores<AppDbRestaurantContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentityConfiguration();
 
 builder.Services.AddDbContext<AppDbRestaurantContext>(opt => 
 {
