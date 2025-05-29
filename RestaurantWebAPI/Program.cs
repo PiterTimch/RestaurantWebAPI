@@ -11,10 +11,10 @@ using RestaurantWebAPI;
 using Domain;
 using Domain.Entities.Identity;
 using RestaurantWebAPI.Filters;
-using RestaurantWebAPI.Interfaces;
-using RestaurantWebAPI.Services;
-using RestaurantWebAPI.Services.CRUD;
-using RestaurantWebAPI.Validators.Category;
+using Core.Interfaces;
+using Core.Services;
+using Core.Services.CRUD;
+using Core.Validators.Category;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

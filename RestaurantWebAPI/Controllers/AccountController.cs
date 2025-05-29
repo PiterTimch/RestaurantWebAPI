@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Entities.Identity;
-using RestaurantWebAPI.Interfaces;
-using RestaurantWebAPI.Models.Account;
-using RestaurantWebAPI.Services;
+using Core.Interfaces;
+using Core.Models.Account;
+using Core.Services;
 
 namespace RestaurantWebAPI.Controllers
 {

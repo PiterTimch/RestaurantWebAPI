@@ -1,8 +1,0 @@
-﻿//це тимчасовий клас для ліста юзерів, далі перенису для адмін-панелі
-
-namespace RestaurantWebAPI.Models.Account;
-
-public class DeleteUserModel
-{
-    public int Id { get; set; }
-}

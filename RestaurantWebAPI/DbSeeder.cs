@@ -5,8 +5,8 @@ using RestaurantWebAPI.Constants;
 using Domain;
 using Domain.Entities;
 using Domain.Entities.Identity;
-using RestaurantWebAPI.Interfaces;
-using RestaurantWebAPI.Models.Seeder;
+using Core.Interfaces;
+using Core.Models.Seeder;
 using System.Text.Json;
 
 namespace RestaurantWebAPI;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantWebAPI.Constants;
-using RestaurantWebAPI.Interfaces;
-using RestaurantWebAPI.Models.Category;
+using Core.Interfaces;
+using Core.Models.Category;
 
 namespace RestaurantWebAPI.Controllers
 {
