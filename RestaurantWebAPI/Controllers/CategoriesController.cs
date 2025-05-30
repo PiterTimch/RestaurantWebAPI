@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantWebAPI.Constants;
 using Core.Interfaces;
 using Core.Models.Category;
+using Core.Models.Search;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -16,6 +17,14 @@ namespace RestaurantWebAPI.Controllers
             var model = await categoriesService.GetAllAsync();
 
             return Ok(model);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] CategorySearchModel model)
+        {
+            var result = await categoriesService.GetAllAsync(model);
+            
+            return Ok(result);
         }
 
         [HttpPost("create")]

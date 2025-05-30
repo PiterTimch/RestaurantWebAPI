@@ -5,6 +5,7 @@ using Domain;
 using Domain.Entities;
 using Core.Interfaces;
 using Core.Models.Category;
+using Core.Models.Search;
 
 namespace Core.Services.CRUD;
 
@@ -73,6 +74,41 @@ public class CategoriesService(
             .AsNoTracking()
             .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<CategoryItemModel>> GetAllAsync(CategorySearchModel searchModel)
+    {
+        var query = context.Categories.AsQueryable();
+
+        if (searchModel.Id.HasValue)
+        {
+            query = query.Where(x => x.Id == searchModel.Id.Value);
+        }
+        else
+        {
+            if (!String.IsNullOrEmpty(searchModel.Name))
+            {
+                string searchName = searchModel.Name.Trim().ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchModel.Name));
+            }
+            if (!String.IsNullOrEmpty(searchModel.Slug))
+            {
+                string searchName = searchModel.Slug.Trim().ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchModel.Slug));
+            }
+        }
+
+        int skip = (searchModel.PageNumber - 1) * searchModel.ItemsPerPage;
+
+        var items = await query
+            .AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(skip)
+            .Take(searchModel.ItemsPerPage)
+            .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return items;
     }
 
     public async Task DeleteAsync(CategoryDeleteModel model)
