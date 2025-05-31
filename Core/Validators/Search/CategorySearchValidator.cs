@@ -19,7 +19,7 @@ public class CategorySearchValidator : AbstractValidator<CategorySearchModel>
         RuleFor(x => x.ItemsPerPage)
             .NotNull().WithMessage("Кількість елементів на сторінці обов'язкова")
             .GreaterThan(0).WithMessage("Кількість елементів на сторінці повинна бути більше 0")
-            .LessThanOrEqualTo(50).WithMessage("Кількість елементів на сторінці не може перевищувати 100");
+            .LessThanOrEqualTo(50).WithMessage("Кількість елементів на сторінці не може перевищувати 50");
 
         RuleFor(x => x.PageNumber)
             .NotNull().WithMessage("Номер сторінки обов'язковий")

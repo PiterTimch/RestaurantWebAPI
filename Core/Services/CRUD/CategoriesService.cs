@@ -6,6 +6,7 @@ using Domain.Entities;
 using Core.Interfaces;
 using Core.Models.Category;
 using Core.Models.Search;
+using Core.Models.Common;
 
 namespace Core.Services.CRUD;
 
@@ -76,7 +77,7 @@ public class CategoriesService(
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<CategoryItemModel>> GetAllAsync(CategorySearchModel searchModel)
+    public async Task<PaginationModel<CategoryItemModel>> GetAllAsync(CategorySearchModel searchModel)
     {
         var query = context.Categories.AsQueryable();
 
@@ -89,12 +90,12 @@ public class CategoriesService(
             if (!String.IsNullOrEmpty(searchModel.Name))
             {
                 string searchName = searchModel.Name.Trim().ToLower();
-                query = query.Where(x => x.Name.ToLower().Contains(searchModel.Name));
+                query = query.Where(x => x.Name.ToLower().Contains(searchName));
             }
             if (!String.IsNullOrEmpty(searchModel.Slug))
             {
-                string searchName = searchModel.Slug.Trim().ToLower();
-                query = query.Where(x => x.Name.ToLower().Contains(searchModel.Slug));
+                string searchSlug = searchModel.Slug.Trim().ToLower();
+                query = query.Where(x => x.Slug.ToLower().Contains(searchSlug));
             }
         }
 
@@ -108,7 +109,15 @@ public class CategoriesService(
             .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-        return items;
+        var model = new PaginationModel<CategoryItemModel>
+        {
+            Items = items,
+            ItemPerPage = searchModel.ItemsPerPage,
+            CurrentPge = searchModel.PageNumber,
+            TotalPge = (int)Math.Ceiling((double)await query.CountAsync() / searchModel.ItemsPerPage)
+        };
+
+        return model;
     }
 
     public async Task DeleteAsync(CategoryDeleteModel model)
