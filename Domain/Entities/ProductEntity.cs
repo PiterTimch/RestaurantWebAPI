@@ -12,9 +12,6 @@ public class ProductEntity : BaseEntity<long>
     [StringLength(250)]
     public string Slug { get; set; } = String.Empty;
 
-    [StringLength(200)]
-    public string Image { get; set; } = String.Empty;
-
     public int Weight { get; set; }
 
     public decimal Price { get; set; }
@@ -28,5 +25,6 @@ public class ProductEntity : BaseEntity<long>
     public ProductSizeEntity? ProductSize { get; set; }
 
     public ICollection<ProductIngridientEntity>? ProductIngridients { get; set; }
+    public ICollection<ProductImageEntity>? ProductImages { get; set; }
 
 }
