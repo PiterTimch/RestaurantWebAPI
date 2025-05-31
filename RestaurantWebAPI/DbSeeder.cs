@@ -175,5 +175,52 @@ public static class DbSeeder
             }
         }
 
+        if (!context.Products.Any())
+        {
+            var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
+
+            var сaesar = new ProductEntity
+            {
+                Name = "Цезаре",
+                Slug = "caesar",
+                Price = 195,
+                Weight = 540,
+                CategoryId = 1, // Assuming the first category is for Caesar
+                ProductSizeId = 1 // Assuming the first size is for Caesar
+            };
+
+            context.Products.Add(сaesar);
+            await context.SaveChangesAsync();
+
+            var ingredients = context.Ingredients.ToList();
+
+            foreach (var ingredient in ingredients)
+            {
+                var productIngredient = new ProductIngridientEntity
+                {
+                    ProductId = сaesar.Id,
+                    IngredientId = ingredient.Id
+                };
+                context.ProductIngridients.Add(productIngredient);
+            }
+            await context.SaveChangesAsync();
+
+            string[] images = {
+         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5Xdb_EUC4gbSN-8RIwGWwX_hrISSFLyiboA&s"
+     };
+
+            foreach (var imageUrl in images)
+            {
+                var productImage = new ProductImageEntity
+                {
+                    ProductId = сaesar.Id,
+                    Name = await imageService.SaveImageFromUrlAsync(imageUrl)
+                };
+                context.ProductImages.Add(productImage);
+            }
+            await context.SaveChangesAsync();
+
+        }
+
     }
 }
