@@ -14,6 +14,7 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<CategoryEntity> Categories { get; set; }
     public DbSet<IngredientEntity> Ingredients { get; set; }
     public DbSet<ProductSizeEntity> ProductSizes { get; set; }
+    public DbSet<ProductEntity> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
