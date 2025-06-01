@@ -5,13 +5,13 @@
 namespace Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class addproductsingridients : Migration
+    public partial class addproductsIngredients : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tblProductIngridients",
+                name: "tblProductIngredients",
                 columns: table => new
                 {
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
@@ -19,15 +19,15 @@ namespace Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblProductIngridients", x => new { x.ProductId, x.IngredientId });
+                    table.PrimaryKey("PK_tblProductIngredients", x => new { x.ProductId, x.IngredientId });
                     table.ForeignKey(
-                        name: "FK_tblProductIngridients_tblIngredients_IngredientId",
+                        name: "FK_tblProductIngredients_tblIngredients_IngredientId",
                         column: x => x.IngredientId,
                         principalTable: "tblIngredients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblProductIngridients_tblProducts_ProductId",
+                        name: "FK_tblProductIngredients_tblProducts_ProductId",
                         column: x => x.ProductId,
                         principalTable: "tblProducts",
                         principalColumn: "Id",
@@ -35,8 +35,8 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblProductIngridients_IngredientId",
-                table: "tblProductIngridients",
+                name: "IX_tblProductIngredients_IngredientId",
+                table: "tblProductIngredients",
                 column: "IngredientId");
         }
 
@@ -44,7 +44,7 @@ namespace Domain.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tblProductIngridients");
+                name: "tblProductIngredients");
         }
     }
 }

@@ -24,7 +24,7 @@ public class ProductEntity : BaseEntity<long>
     public long? ProductSizeId { get; set; }
     public ProductSizeEntity? ProductSize { get; set; }
 
-    public ICollection<ProductIngridientEntity>? ProductIngridients { get; set; }
+    public ICollection<ProductIngredientEntity>? ProductIngredients { get; set; }
     public ICollection<ProductImageEntity>? ProductImages { get; set; }
 
 }

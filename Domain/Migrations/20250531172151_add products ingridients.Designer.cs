@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbRestaurantContext))]
-    [Migration("20250531172151_add products ingridients")]
-    partial class addproductsingridients
+    [Migration("20250531172151_add products Ingredients")]
+    partial class addproductsIngredients
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,7 +243,7 @@ namespace Domain.Migrations
                     b.ToTable("tblProducts");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductIngridientEntity", b =>
+            modelBuilder.Entity("Domain.Entities.ProductIngredientEntity", b =>
                 {
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
@@ -255,7 +255,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("IngredientId");
 
-                    b.ToTable("tblProductIngridients");
+                    b.ToTable("tblProductIngredients");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductSizeEntity", b =>
@@ -418,16 +418,16 @@ namespace Domain.Migrations
                     b.Navigation("ProductSize");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductIngridientEntity", b =>
+            modelBuilder.Entity("Domain.Entities.ProductIngredientEntity", b =>
                 {
                     b.HasOne("Domain.Entities.IngredientEntity", "Ingredient")
-                        .WithMany("ProductIngridients")
+                        .WithMany("ProductIngredients")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.ProductEntity", "Product")
-                        .WithMany("ProductIngridients")
+                        .WithMany("ProductIngredients")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -509,12 +509,12 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.IngredientEntity", b =>
                 {
-                    b.Navigation("ProductIngridients");
+                    b.Navigation("ProductIngredients");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductEntity", b =>
                 {
-                    b.Navigation("ProductIngridients");
+                    b.Navigation("ProductIngredients");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductSizeEntity", b =>

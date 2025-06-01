@@ -196,12 +196,12 @@ public static class DbSeeder
 
             foreach (var ingredient in ingredients)
             {
-                var productIngredient = new ProductIngridientEntity
+                var productIngredient = new ProductIngredientEntity
                 {
                     ProductId = сaesar.Id,
                     IngredientId = ingredient.Id
                 };
-                context.ProductIngridients.Add(productIngredient);
+                context.ProductIngredients.Add(productIngredient);
             }
             await context.SaveChangesAsync();
 
