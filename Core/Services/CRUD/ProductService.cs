@@ -11,15 +11,9 @@ public class ProductService(IMapper mapper, AppDbRestaurantContext context) : IP
 {
     public async Task<IEnumerable<ProductItemModel>> GetAllAsync()
     {
-        var model = await context.Products
-            .Include(p => p.Category)
-            .Include(p => p.ProductSize)
-            .Include(p => p.ProductImages)
-            .Include(p => p.ProductIngredients)
-                .ThenInclude(pi => pi.Ingredient)
+        var models = await context.Products
+            .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
-
-        var models = mapper.Map<List<ProductItemModel>>(model);
 
         return models;
     }
@@ -36,15 +30,10 @@ public class ProductService(IMapper mapper, AppDbRestaurantContext context) : IP
 
     public async Task<ProductItemModel> GetBySlugAsync(string slug)
     {
-        var entity = await context.Products
-            .Include(p => p.Category)
-            .Include(p => p.ProductSize)
-            .Include(p => p.ProductImages)
-            .Include(p => p.ProductIngredients)
-                .ThenInclude(pi => pi.Ingredient)
-            .FirstOrDefaultAsync(x => x.Slug == slug);
-
-        var model = mapper.Map<ProductItemModel>(entity);
+        var model = await context.Products
+            .Where(p => p.Slug == slug)
+            .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
 
         return model;
     }
