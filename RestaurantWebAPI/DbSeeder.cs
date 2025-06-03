@@ -206,7 +206,9 @@ public static class DbSeeder
             await context.SaveChangesAsync();
 
             string[] images = {
-         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5Xdb_EUC4gbSN-8RIwGWwX_hrISSFLyiboA&s"
+         "https://prontopizza.ua/ternopil/wp-content/uploads/sites/15/2023/10/czezar-kopiya-500x500.webp",
+         "https://kvadratsushi.com/wp-content/uploads/2020/06/chezar_1200x800.jpg",
+         "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
      };
 
             foreach (var imageUrl in images)
