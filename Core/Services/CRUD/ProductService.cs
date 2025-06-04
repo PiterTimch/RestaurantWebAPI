@@ -16,6 +16,7 @@ public class ProductService(IMapper mapper,
     public async Task<IEnumerable<ProductItemModel>> GetAllAsync()
     {
         var models = await context.Products
+            .Where(x => x.ParentProduct == null)
             .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 

@@ -16,4 +16,5 @@ public class ProductItemModel
     public ProductSizeItemModel? ProductSize { get; set; }
     public ICollection<ProductImageItemModel>? ProductImages { get; set; }
     public ICollection<IngredientItemModel>? ProductIngredients { get; set; }
+    public ICollection<ProductVariantItemModel>? Variants { get; set; }
 }

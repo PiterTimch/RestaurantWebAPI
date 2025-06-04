@@ -179,50 +179,68 @@ public static class DbSeeder
         {
             var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
 
-            var сaesar = new ProductEntity
+            // Створюємо головний продукт (без розміру)
+            var caesarParent = new ProductEntity
             {
                 Name = "Цезаре",
                 Slug = "caesar",
-                Price = 195,
-                Weight = 540,
-                CategoryId = 1, // Assuming the first category is for Caesar
-                ProductSizeId = 1 // Assuming the first size is for Caesar
+                CategoryId = 1
             };
 
-            context.Products.Add(сaesar);
+            context.Products.Add(caesarParent);
             await context.SaveChangesAsync();
 
-            var ingredients = context.Ingredients.ToList();
+            // Масив для розмірів
+            var sizes = await context.ProductSizes.ToListAsync(); // Наприклад: Мала, Середня, Велика
 
-            foreach (var ingredient in ingredients)
+            var images = new[]
             {
-                var productIngredient = new ProductIngredientEntity
-                {
-                    ProductId = сaesar.Id,
-                    IngredientId = ingredient.Id
-                };
-                context.ProductIngredients.Add(productIngredient);
-            }
-            await context.SaveChangesAsync();
+        "https://prontopizza.ua/ternopil/wp-content/uploads/sites/15/2023/10/czezar-kopiya-500x500.webp",
+        "https://kvadratsushi.com/wp-content/uploads/2020/06/chezar_1200x800.jpg",
+        "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
+    };
 
-            string[] images = {
-         "https://prontopizza.ua/ternopil/wp-content/uploads/sites/15/2023/10/czezar-kopiya-500x500.webp",
-         "https://kvadratsushi.com/wp-content/uploads/2020/06/chezar_1200x800.jpg",
-         "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
-     };
-
-            foreach (var imageUrl in images)
+            foreach (var size in sizes)
             {
-                var productImage = new ProductImageEntity
+                var child = new ProductEntity
                 {
-                    ProductId = сaesar.Id,
-                    Name = await imageService.SaveImageFromUrlAsync(imageUrl)
+                    Name = $"Цезаре ({size.Name})",
+                    Slug = $"caesar-{size.Name.ToLower().Replace(" ", "").Replace("см", "cm")}",
+                    Price = 195 + size.Id * 20, //доробити
+                    Weight = 500 + Convert.ToInt32(size.Id) * 50, //доробити
+                    CategoryId = caesarParent.CategoryId,
+                    ProductSizeId = size.Id,
+                    ParentProductId = caesarParent.Id
                 };
-                context.ProductImages.Add(productImage);
-            }
-            await context.SaveChangesAsync();
 
+                context.Products.Add(child);
+                await context.SaveChangesAsync();
+
+                var ingredients = context.Ingredients.ToList();
+                foreach (var ingredient in ingredients)
+                {
+                    context.ProductIngredients.Add(new ProductIngredientEntity
+                    {
+                        ProductId = child.Id,
+                        IngredientId = ingredient.Id
+                    });
+                }
+
+                // Додаємо картинки
+                foreach (var imageUrl in images)
+                {
+                    var savedName = await imageService.SaveImageFromUrlAsync(imageUrl);
+                    context.ProductImages.Add(new ProductImageEntity
+                    {
+                        ProductId = child.Id,
+                        Name = savedName
+                    });
+                }
+
+                await context.SaveChangesAsync();
+            }
         }
+
 
     }
 }

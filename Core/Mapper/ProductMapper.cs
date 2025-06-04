@@ -18,12 +18,15 @@ public class ProductMapper : Profile
             .ForMember(dest => dest.ProductImages, opt => opt
             .MapFrom(x => x.ProductImages!.OrderBy(p => p.Priority)))
             .ForMember(dest => dest.ProductIngredients,
-                opt => opt.MapFrom(src => src.ProductIngredients!.Select(pi => pi.Ingredient)));
+                opt => opt.MapFrom(src => src.ProductIngredients!.Select(pi => pi.Ingredient)))
+            .ForMember(dest => dest.Variants,
+                opt => opt.MapFrom(src => src.Variants));
 
         CreateMap<ProductCreateModel, ProductEntity>()
             .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
             .ForMember(dest => dest.ProductIngredients, opt => opt.Ignore());
 
         CreateMap<ProductImageEntity, ProductImageItemModel>();
+        CreateMap<ProductEntity, ProductVariantItemModel>();
     }
 }
