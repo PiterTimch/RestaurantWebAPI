@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Core.Models.Category;
 using Core.Models.Seeder;
+using Core.Models.Ingredient;
 
 namespace Core.Mapper;
 
@@ -9,6 +10,7 @@ public class IngredientMapper : Profile
 {
     public IngredientMapper() { 
         CreateMap<SeederIngredientModel, IngredientEntity>();
-        
+
+        CreateMap<IngredientEntity, IngredientItemModel>();
     }
 }

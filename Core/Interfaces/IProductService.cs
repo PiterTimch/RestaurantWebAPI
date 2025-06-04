@@ -7,4 +7,5 @@ public interface IProductService
     Task<IEnumerable<ProductItemModel>> GetAllAsync();
     Task<ProductItemModel> GetByIdAsync(long id);
     Task<ProductItemModel> GetBySlugAsync(string slug);
+    Task<ProductItemModel> CreateAsync(ProductCreateModel model);
 }

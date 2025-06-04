@@ -4,6 +4,7 @@ using RestaurantWebAPI.Constants;
 using Core.Interfaces;
 using Core.Models.Category;
 using Core.Models.Search;
+using Core.Models.Product;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -25,6 +26,14 @@ namespace RestaurantWebAPI.Controllers
             var result = await productService.GetBySlugAsync(slug);
 
             return Ok(result);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromForm] ProductCreateModel model)
+        {
+            var createdProduct = await productService.CreateAsync(model);
+
+            return Ok(createdProduct);
         }
     }
 }

@@ -20,10 +20,10 @@ public class ProductMapper : Profile
             .ForMember(dest => dest.ProductIngredients,
                 opt => opt.MapFrom(src => src.ProductIngredients!.Select(pi => pi.Ingredient)));
 
+        CreateMap<ProductCreateModel, ProductEntity>()
+            .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
+            .ForMember(dest => dest.ProductIngredients, opt => opt.Ignore());
 
-        CreateMap<CategoryEntity, CategoryItemModel>();
-        CreateMap<ProductSizeEntity, ProductSizeItemModel>();
         CreateMap<ProductImageEntity, ProductImageItemModel>();
-        CreateMap<IngredientEntity, IngredientItemModel>();
     }
 }
