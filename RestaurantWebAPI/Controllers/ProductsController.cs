@@ -28,6 +28,14 @@ namespace RestaurantWebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id:long}")]
+        public async Task<IActionResult> GetBySlug(int id)
+        {
+            var result = await productService.GetByIdAsync(id);
+
+            return Ok(result);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] ProductCreateModel model)
         {

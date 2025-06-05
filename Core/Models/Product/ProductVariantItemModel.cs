@@ -1,9 +1,5 @@
-﻿using Core.Models.ProductSize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Models.ProductImage;
+using Core.Models.ProductSize;
 
 namespace Core.Models.Product;
 
@@ -14,4 +10,5 @@ public class ProductVariantItemModel
     public decimal Price { get; set; }
 
     public ProductSizeItemModel? ProductSize { get; set; }
+    public ICollection<ProductImageItemModel>? ProductImages { get; set; }
 }

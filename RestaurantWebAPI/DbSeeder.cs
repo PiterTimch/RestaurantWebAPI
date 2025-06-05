@@ -8,6 +8,7 @@ using Domain.Entities.Identity;
 using Core.Interfaces;
 using Core.Models.Seeder;
 using System.Text.Json;
+using Core.Models.ProductImage;
 
 namespace RestaurantWebAPI;
 
@@ -184,21 +185,21 @@ public static class DbSeeder
             {
                 Name = "Цезаре",
                 Slug = "caesar",
-                CategoryId = 1
+                CategoryId = 1,
+                ProductIngredients = new List<ProductIngredientEntity>()
             };
 
             context.Products.Add(caesarParent);
             await context.SaveChangesAsync();
 
-            // Масив для розмірів
-            var sizes = await context.ProductSizes.ToListAsync(); // Наприклад: Мала, Середня, Велика
+            var sizes = await context.ProductSizes.ToListAsync();
 
             var images = new[]
             {
-        "https://prontopizza.ua/ternopil/wp-content/uploads/sites/15/2023/10/czezar-kopiya-500x500.webp",
-        "https://kvadratsushi.com/wp-content/uploads/2020/06/chezar_1200x800.jpg",
-        "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
-    };
+                "https://prontopizza.ua/ternopil/wp-content/uploads/sites/15/2023/10/czezar-kopiya-500x500.webp",
+                "https://kvadratsushi.com/wp-content/uploads/2020/06/chezar_1200x800.jpg",
+                "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
+            };
 
             foreach (var size in sizes)
             {
@@ -206,41 +207,38 @@ public static class DbSeeder
                 {
                     Name = $"Цезаре ({size.Name})",
                     Slug = $"caesar-{size.Name.ToLower().Replace(" ", "").Replace("см", "cm")}",
-                    Price = 195 + size.Id * 20, //доробити
-                    Weight = 500 + Convert.ToInt32(size.Id) * 50, //доробити
+                    Price = 195 + size.Id * 20,
+                    Weight = 500 + Convert.ToInt32(size.Id) * 50,
                     CategoryId = caesarParent.CategoryId,
                     ProductSizeId = size.Id,
-                    ParentProductId = caesarParent.Id
+                    ParentProductId = caesarParent.Id,
+                    ProductImages = new List<ProductImageEntity>()
                 };
 
-                context.Products.Add(child);
-                await context.SaveChangesAsync();
-
-                var ingredients = context.Ingredients.ToList();
-                foreach (var ingredient in ingredients)
-                {
-                    context.ProductIngredients.Add(new ProductIngredientEntity
-                    {
-                        ProductId = child.Id,
-                        IngredientId = ingredient.Id
-                    });
-                }
-
-                // Додаємо картинки
                 foreach (var imageUrl in images)
                 {
                     var savedName = await imageService.SaveImageFromUrlAsync(imageUrl);
-                    context.ProductImages.Add(new ProductImageEntity
+                    child.ProductImages.Add(new ProductImageEntity
                     {
-                        ProductId = child.Id,
                         Name = savedName
                     });
                 }
 
+                context.Products.Add(child);
                 await context.SaveChangesAsync();
             }
-        }
 
+            var ingredients = context.Ingredients.ToList();
+            foreach (var ingredient in ingredients)
+            {
+                caesarParent.ProductIngredients.Add(new ProductIngredientEntity
+                {
+                    IngredientId = ingredient.Id
+                });
+            }
+
+            await context.SaveChangesAsync();
+        }
 
     }
 }
