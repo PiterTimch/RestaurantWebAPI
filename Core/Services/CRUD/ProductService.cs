@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
+using Core.Models.Ingredient;
 using Core.Models.Product;
+using Core.Models.ProductSize;
 using Domain;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -97,5 +99,21 @@ public class ProductService(IMapper mapper,
         var itemModel = mapper.Map<ProductItemModel>(entity);
         
         return itemModel;
+    }
+
+    public async Task<IEnumerable<ProductSizeItemModel>> GetSizesAsync()
+    {
+        var sizes = await context.ProductSizes
+            .ProjectTo<ProductSizeItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+        return sizes;
+    }
+
+    public async Task<IEnumerable<IngredientItemModel>> GetIngredientsAsync()
+    {
+        var ingredients = await context.Ingredients
+            .ProjectTo<IngredientItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+        return ingredients;
     }
 }

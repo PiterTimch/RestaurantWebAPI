@@ -43,5 +43,21 @@ namespace RestaurantWebAPI.Controllers
 
             return Ok(createdProduct);
         }
+
+        [HttpGet("sizes")]
+        public async Task<IActionResult> GetSizes()
+        {
+            var sizes = await productService.GetSizesAsync();
+
+            return Ok(sizes);
+        }
+
+        [HttpGet("ingredients")]
+        public async Task<IActionResult> GetIngredients()
+        {
+            var ingredients = await productService.GetIngredientsAsync();
+
+            return Ok(ingredients);
+        }
     }
 }
