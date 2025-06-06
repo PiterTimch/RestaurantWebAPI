@@ -48,56 +48,41 @@ public class ProductService(IMapper mapper,
     public async Task<ProductItemModel> CreateAsync(ProductCreateModel model)
     {
         var entity = mapper.Map<ProductEntity>(model);
-
-        entity.ProductImages = model.ProductImages != null
-            ? (await Task.WhenAll(model.ProductImages.Select(async image =>
-                new ProductImageEntity { Name = await imageService.SaveImageAsync(image.ImageFile) })))
-                .ToList()
-            : new List<ProductImageEntity>();
-
-        entity.ProductIngredients = new List<ProductIngredientEntity>();
-
-        if (model.IngredientIds != null && model.IngredientIds.Any())
+        context.Products.Add(entity);
+        await context.SaveChangesAsync();
+        foreach (var ingId in model.IngredientIds!)
         {
-            var existingIngredients = await context.Ingredients
-                .Where(i => model.IngredientIds.Contains(i.Id))
-                .ToListAsync();
-
-            foreach (var ingredient in existingIngredients)
+            var productIngredient = new ProductIngredientEntity
             {
-                entity.ProductIngredients.Add(new ProductIngredientEntity
-                {
-                    Ingredient = ingredient
-                });
-            }
+                ProductId = entity.Id,
+                IngredientId = ingId
+            };
+            context.ProductIngredients.Add(productIngredient);
         }
+        await context.SaveChangesAsync();
 
-        if (model.NewIngredients != null && model.NewIngredients!.Any())
+
+        for (short i = 0; i < model.ImageFiles!.Count; i++)
         {
-            foreach (var newIngredient in model.NewIngredients!)
+            try
             {
-                var newIngredientEntity = new IngredientEntity
+                var productImage = new ProductImageEntity
                 {
-                    Name = newIngredient.Name,
-                    Image = newIngredient.ImageFile != null
-                        ? await imageService.SaveImageAsync(newIngredient.ImageFile)
-                        : null
+                    ProductId = entity.Id,
+                    Name = await imageService.SaveImageAsync(model.ImageFiles[i]),
+                    Priority = i
                 };
-
-                context.Ingredients.Add(newIngredientEntity);
-
-                entity.ProductIngredients.Add(new ProductIngredientEntity
-                {
-                    Ingredient = newIngredientEntity
-                });
+                context.ProductImages.Add(productImage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error Json Parse Data for PRODUCT IMAGE", ex.Message);
             }
         }
-
-        await context.Products.AddAsync(entity);
-        context.SaveChanges();
-
-        var itemModel = mapper.Map<ProductItemModel>(entity);
+        await context.SaveChangesAsync();
         
+        var itemModel = mapper.Map<ProductItemModel>(entity);
+
         return itemModel;
     }
 
