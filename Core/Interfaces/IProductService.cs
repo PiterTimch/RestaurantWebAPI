@@ -10,6 +10,7 @@ public interface IProductService
     Task<ProductItemModel> GetByIdAsync(long id);
     Task<ProductItemModel> GetBySlugAsync(string slug);
     Task<ProductItemModel> CreateAsync(ProductCreateModel model);
-    public Task<IEnumerable<IngredientItemModel>> GetIngredientsAsync();
-    public Task<IEnumerable<ProductSizeItemModel>> GetSizesAsync();
+    Task<IEnumerable<IngredientItemModel>> GetIngredientsAsync();
+    Task<IEnumerable<ProductSizeItemModel>> GetSizesAsync();
+    Task<string> DeleteAsync(ProductDeleteModel model);
 }

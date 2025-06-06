@@ -101,4 +101,44 @@ public class ProductService(IMapper mapper,
             .ToListAsync();
         return ingredients;
     }
+
+    public async Task<string> DeleteAsync(ProductDeleteModel model)
+    {
+        var product = await context.Products.FirstOrDefaultAsync(p => p.Id == model.Id);
+        if (product == null)
+            throw new Exception("Продукт не знайдено");
+
+        var variants = await context.Products
+            .Where(p => p.ParentProductId == model.Id)
+            .Select(p => new ProductDeleteModel() { Id = model.Id })
+            .ToListAsync();
+
+        foreach (var variantId in variants)
+        {
+            await DeleteAsync(variantId);
+        }
+
+        var productImages = await context.ProductImages
+            .Where(img => img.ProductId == model.Id)
+            .ToListAsync();
+
+        if (productImages.Any())
+        {
+            var imageNames = productImages.Select(img => img.Name).ToList();
+            await DeleteImagesAsync(imageNames);
+
+            context.ProductImages.RemoveRange(productImages);
+        }
+
+        context.Products.Remove(product);
+        await context.SaveChangesAsync();
+
+        return $"Продукт {product.Name} видалено";
+    }
+
+
+    private async Task DeleteImagesAsync(List<string> imageNames) 
+    {
+        imageNames.ForEach(async name => await imageService.DeleteImageAsync(name));
+    }
 }

@@ -59,5 +59,13 @@ namespace RestaurantWebAPI.Controllers
 
             return Ok(ingredients);
         }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete(ProductDeleteModel model)
+        {
+            var result = await productService.DeleteAsync(model);
+
+            return Ok(result);
+        }
     }
 }
