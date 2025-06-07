@@ -13,4 +13,5 @@ public interface IProductService
     Task<IEnumerable<IngredientItemModel>> GetIngredientsAsync();
     Task<IEnumerable<ProductSizeItemModel>> GetSizesAsync();
     Task<string> DeleteAsync(ProductDeleteModel model);
+    Task<ProductItemModel> UpdateAsync(ProductEditModel model);
 }

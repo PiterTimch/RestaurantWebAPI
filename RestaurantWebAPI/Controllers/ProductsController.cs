@@ -67,5 +67,12 @@ namespace RestaurantWebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromForm] ProductEditModel model)
+        {
+            var updatedProduct = await productService.UpdateAsync(model);
+            return Ok(updatedProduct);
+        }
     }
 }

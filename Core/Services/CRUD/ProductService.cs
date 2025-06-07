@@ -141,4 +141,103 @@ public class ProductService(IMapper mapper,
     {
         imageNames.ForEach(async name => await imageService.DeleteImageAsync(name));
     }
+
+    public async Task<ProductItemModel> UpdateAsync(ProductEditModel model)
+    {
+        var product = await context.Products
+            .Where(p => p.Id == model.Id)
+            .ProjectTo<ProductEditModel>(mapper.ConfigurationProvider)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+
+        var entity = await context.Products.FindAsync(model.Id);
+
+        mapper.Map(model, entity);
+
+        var currentIngredients = await context.ProductIngredients
+            .Where(x => x.ProductId == model.Id)
+            .ToListAsync();
+
+        var newIngredientIds = model.IngredientIds ?? new List<long>();
+
+        var toRemove = currentIngredients
+            .Where(x => !newIngredientIds.Contains(x.IngredientId))
+            .ToList();
+
+        var toAdd = newIngredientIds
+            .Where(id => !currentIngredients.Any(x => x.IngredientId == id))
+            .Select(id => new ProductIngredientEntity
+            {
+                ProductId = model.Id,
+                IngredientId = id
+            }).ToList();
+
+        if (toRemove.Any())
+            context.ProductIngredients.RemoveRange(toRemove);
+
+        if (toAdd.Any())
+            await context.ProductIngredients.AddRangeAsync(toAdd);
+
+        var existingImageIds = model.ExistingImageIds ?? new List<long>();
+
+        if (existingImageIds.Any())
+        {
+            var imagesToUpdate = await context.ProductImages
+                .Where(x => existingImageIds.Contains(x.Id))
+                .ToListAsync();
+
+            for (short i = 0; i < existingImageIds.Count; i++)
+            {
+                var img = imagesToUpdate.FirstOrDefault(x => x.Id == existingImageIds[i]);
+                if (img != null)
+                    img.Priority = i;
+            }
+        }
+
+        var existingImages = await context.ProductImages
+            .Where(x => x.ProductId == model.Id)
+            .ToListAsync();
+
+        var imagesToRemove = existingImages
+            .Where(x => !existingImageIds.Contains(x.Id))
+            .ToList();
+
+        if (imagesToRemove.Any())
+        {
+            await DeleteImagesAsync(imagesToRemove.Select(x => x.Name).ToList());
+            context.ProductImages.RemoveRange(imagesToRemove);
+        }
+
+        if (model.NewImages?.Any() == true)
+        {
+            for (short i = 0; i < model.NewImages.Count; i++)
+            {
+                try
+                {
+                    var productImage = new ProductImageEntity
+                    {
+                        ProductId = model.Id,
+                        Name = await imageService.SaveImageAsync(model.NewImages[i]),
+                        Priority = i
+                    };
+                    await context.ProductImages.AddAsync(productImage);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error saving product image: " + ex.Message);
+                }
+            }
+        }
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Products
+            .Where(p => p.Id == model.Id)
+            .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
+            .FirstAsync();
+
+        return result;
+    }
+
 }
