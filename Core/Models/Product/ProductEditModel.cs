@@ -15,7 +15,5 @@ public class ProductEditModel
     public List<long>? IngredientIds { get; set; }
 
     [BindProperty(Name = "imageFiles[]")]
-    public List<IFormFile>? NewImages { get; set; }
-
-    public List<long>? ExistingImageIds { get; set; }
+    public List<IFormFile>? ImageFiles { get; set; }
 }

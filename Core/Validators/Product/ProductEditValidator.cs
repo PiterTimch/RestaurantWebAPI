@@ -41,13 +41,5 @@ public class ProductEditValidator : AbstractValidator<ProductEditModel>
                 return await db.Ingredients
                     .AnyAsync(i => i.Id == ingredientId, cancellationToken: cancellation);
             }).WithMessage("Інгредієнта з таким ID не існує");
-
-        RuleForEach(x => x.ExistingImageIds!)
-            .GreaterThan(0).WithMessage("Id зображення має бути додатнім")
-            .MustAsync(async (imageId, cancellation) =>
-            {
-                return await db.ProductImages
-                    .AnyAsync(img => img.Id == imageId, cancellationToken: cancellation);
-            }).WithMessage("Зображення з таким ID не існує");
     }
 }

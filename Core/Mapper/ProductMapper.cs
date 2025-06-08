@@ -35,12 +35,5 @@ public class ProductMapper : Profile
             .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
             .ForMember(dest => dest.ProductIngredients, opt => opt.Ignore())
             .ForMember(dest => dest.Variants, opt => opt.Ignore());
-
-        CreateMap<ProductEntity, ProductEditModel>()
-            .ForMember(dest => dest.ExistingImageIds,
-                opt => opt.MapFrom(src => src.ProductImages!.OrderBy(p => p.Priority).Select(p => p.Id)))
-            .ForMember(dest => dest.IngredientIds,
-                opt => opt.MapFrom(src => src.ProductIngredients!.Select(pi => pi.IngredientId)))
-            .ForMember(dest => dest.NewImages, opt => opt.Ignore()); 
     }
 }
