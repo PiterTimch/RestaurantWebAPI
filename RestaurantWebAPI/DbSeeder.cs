@@ -201,6 +201,8 @@ public static class DbSeeder
                 "https://assets.dots.live/misteram-public/018bee4e-8d79-7202-985f-66327f044f25-826x0.png"
             };
 
+            var ingredients = context.Ingredients.ToList();
+
             foreach (var size in sizes)
             {
                 var child = new ProductEntity
@@ -212,8 +214,17 @@ public static class DbSeeder
                     CategoryId = caesarParent.CategoryId,
                     ProductSizeId = size.Id,
                     ParentProductId = caesarParent.Id,
-                    ProductImages = new List<ProductImageEntity>()
+                    ProductImages = new List<ProductImageEntity>(),
+                    ProductIngredients = new List<ProductIngredientEntity>()
                 };
+
+                foreach (var ingredient in ingredients)
+                {
+                    child.ProductIngredients.Add(new ProductIngredientEntity
+                    {
+                        IngredientId = ingredient.Id
+                    });
+                }
 
                 foreach (var imageUrl in images)
                 {
@@ -228,7 +239,6 @@ public static class DbSeeder
                 await context.SaveChangesAsync();
             }
 
-            var ingredients = context.Ingredients.ToList();
             foreach (var ingredient in ingredients)
             {
                 caesarParent.ProductIngredients.Add(new ProductIngredientEntity

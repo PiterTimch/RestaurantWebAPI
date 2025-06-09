@@ -200,6 +200,22 @@ public class ProductService(IMapper mapper,
 
         }
 
+        var existingIngredients = context.ProductIngredients
+            .Where(pi => pi.ProductId == item.Id);
+        context.ProductIngredients.RemoveRange(existingIngredients);
+
+        if (model.IngredientIds != null)
+        {
+            foreach (var ingredientId in model.IngredientIds.Distinct())
+            {
+                var newIngredient = new ProductIngredientEntity
+                {
+                    ProductId = item.Id,
+                    IngredientId = ingredientId
+                };
+                context.ProductIngredients.Add(newIngredient);
+            }
+        }
 
         await context.SaveChangesAsync();
         return item;
