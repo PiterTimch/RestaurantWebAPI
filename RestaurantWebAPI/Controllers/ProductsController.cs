@@ -5,6 +5,7 @@ using Core.Interfaces;
 using Core.Models.Category;
 using Core.Models.Search;
 using Core.Models.Product;
+using Core.Models.Ingredient;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -58,6 +59,15 @@ namespace RestaurantWebAPI.Controllers
             var ingredients = await productService.GetIngredientsAsync();
 
             return Ok(ingredients);
+        }
+
+        [HttpPost("ingredients")]
+        public async Task<IActionResult> CreateIngredient([FromForm] IngredientCreateModel model)
+        {
+            var ingredient = await productService.UploadIngredient(model);
+            if (ingredient != null)
+                return Ok(ingredient);
+            return BadRequest();
         }
 
         [HttpDelete("delete")]

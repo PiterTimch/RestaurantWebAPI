@@ -12,5 +12,8 @@ public class IngredientMapper : Profile
         CreateMap<SeederIngredientModel, IngredientEntity>();
 
         CreateMap<IngredientEntity, IngredientItemModel>();
+
+        CreateMap<IngredientCreateModel, IngredientEntity>()
+            .ForMember(x => x.Image, opt => opt.Ignore());
     }
 }

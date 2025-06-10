@@ -227,4 +227,13 @@ public class ProductService(IMapper mapper,
         return item;
     }
 
+    public async Task<IngredientItemModel> UploadIngredient(IngredientCreateModel model)
+    {
+        var entity = mapper.Map<IngredientEntity>(model);
+        entity.Image = await imageService.SaveImageAsync(model.ImageFile!);
+        context.Ingredients.Add(entity);
+        await context.SaveChangesAsync();
+
+        return mapper.Map<IngredientItemModel>(entity);
+    }
 }
