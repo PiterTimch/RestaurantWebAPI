@@ -144,6 +144,17 @@ public class ProductService(IMapper mapper,
 
     public async Task<ProductItemModel> UpdateAsync(ProductEditModel model)
     {
+        var entity = await context.Products
+            .Where(x => x.Id == model.Id)
+            .SingleOrDefaultAsync();
+
+        entity.Name = model.Name;
+        entity.Slug = model.Slug;
+        entity.Price = model.Price;
+        entity.Weight = model.Weight;
+        entity.CategoryId = model.CategoryId;
+        entity.ProductSizeId = model.ProductSizeId;
+
         var item = await context.Products
             .Where(x => x.Id == model.Id)
             .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
