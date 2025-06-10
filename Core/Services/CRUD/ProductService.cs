@@ -148,12 +148,7 @@ public class ProductService(IMapper mapper,
             .Where(x => x.Id == model.Id)
             .SingleOrDefaultAsync();
 
-        entity.Name = model.Name;
-        entity.Slug = model.Slug;
-        entity.Price = model.Price;
-        entity.Weight = model.Weight;
-        entity.CategoryId = model.CategoryId;
-        entity.ProductSizeId = model.ProductSizeId;
+        mapper.Map(model, entity);
 
         var item = await context.Products
             .Where(x => x.Id == model.Id)
