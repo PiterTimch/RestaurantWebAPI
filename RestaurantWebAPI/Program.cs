@@ -73,6 +73,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 
 builder.Services.AddAuthentication(options =>
