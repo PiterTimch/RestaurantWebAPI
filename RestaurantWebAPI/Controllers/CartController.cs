@@ -7,40 +7,33 @@ using Core.Services;
 using Core.Models.Cart;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController(ICartService cartService, AppDbRestaurantContext context) : Controller
+    public class CartController(ICartService cartService,
+        AppDbRestaurantContext context) : Controller
     {
+        [Authorize]
         [HttpGet("getCart")]
-        public async Task<IActionResult> GetCart(long userId)
+        public async Task<IActionResult> GetCart()
         {
-            if (userId <= 0)
-                return BadRequest("Invalid user ID.");
-            if (!await context.Users.AnyAsync(u => u.Id == userId))
-                return NotFound("User not found.");
-
-            var model = await cartService.GetCartAsync(userId);
+            var model = await cartService.GetCartAsync();
 
             return Ok(model);
         }
 
-        [HttpPost("addCartItem")]
-        public async Task<IActionResult> AddCartItem([FromBody] CartItemCreateModel model)
+        [Authorize]
+        [HttpPost("createUpdate")]
+        public async Task<IActionResult> CreateUpdate([FromBody] CartItemCreateModel model)
         {
-            var cartListModel = await cartService.AddCartItemAsync(model);
-            return Ok(cartListModel);
+            var cartListModel = await cartService.CreateUpdate(model);
+            return Ok();
         }
 
-        [HttpPut("updateCartItemQuantity")]
-        public async Task<IActionResult> UpdateCartItemQuantity([FromBody] CartItemQuantityEditModel model)
-        {
-            var cartListModel = await cartService.UpdateCartItemQuantityAsync(model);
-            return Ok(cartListModel);
-        }
-
+        [Authorize]
         [HttpPut("removeCartItem/{cartItemId}")]
         public async Task<IActionResult> RemoveCartItem(long cartItemId)
         {

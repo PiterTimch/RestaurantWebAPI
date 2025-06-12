@@ -8,29 +8,47 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.CRUD;
 
-public class CartService(IMapper mapper, AppDbRestaurantContext context) : ICartService
+public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthService authService) : ICartService
 {
-    public async Task<CartListModel> AddCartItemAsync(CartItemCreateModel model)
+    public async Task<CartListModel> CreateUpdate(CartItemCreateModel model)
     {
-        var cartEntity = await context.Carts
-            .Include(c => c.CartItems) // не додумався як замінити :(
-            .FirstOrDefaultAsync(x => x.UserId == model.UserId);
+        var userId = await authService.GetUserId();
 
-        cartEntity!.CartItems.Add(new CartItemEntity
+        var cart = await context.Carts
+            .Include(c => c.CartItems.Where(ci => !ci.IsDeleted))
+            .FirstOrDefaultAsync(x => x.UserId == userId);
+
+        if (cart == null)
+            throw new Exception("Cart not found.");
+
+        var existingItem = cart.CartItems
+            .FirstOrDefault(i => i.ProductId == model.ProductId);
+
+        if (existingItem != null)
         {
-            ProductId = model.ProductId,
-            Quantity = 1,
-            CartId = cartEntity.Id
-        });
+            existingItem.Quantity = model.Quantity;
+            context.CartItems.Update(existingItem);
+        }
+        else
+        {
+            var newItem = new CartItemEntity
+            {
+                ProductId = model.ProductId,
+                Quantity = model.Quantity,
+                CartId = cart.Id
+            };
+            context.CartItems.Add(newItem);
+        }
 
-        context.Carts.Update(cartEntity);
-        context.SaveChanges();
-
-        return await GetCartAsync(model.UserId);
+        await context.SaveChangesAsync();
+        return await GetCartAsync();
     }
 
-    public async Task<CartListModel> GetCartAsync(long userId)
+
+    public async Task<CartListModel> GetCartAsync()
     {
+        var userId = await authService.GetUserId();
+
         var model = await context.Carts
             .Where(x => x.UserId == userId)
             .ProjectTo<CartListModel>(mapper.ConfigurationProvider)
@@ -52,20 +70,7 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context) : ICart
         context.CartItems.Update(entity);
         context.SaveChanges();
 
-        return await GetCartAsync(entity.Cart.UserId);
+        return await GetCartAsync();
 
-    }
-
-    public Task<CartListModel> UpdateCartItemQuantityAsync(CartItemQuantityEditModel model)
-    {
-        var entity = context.CartItems
-            .Include(x => x.Cart)
-            .FirstOrDefault(x => x.Id == model.CartItemId);
-        entity!.Quantity = model.NewQuantity;
-
-        context.CartItems.Update(entity);
-        context.SaveChanges();
-
-        return GetCartAsync(entity.Cart.UserId);
     }
 }

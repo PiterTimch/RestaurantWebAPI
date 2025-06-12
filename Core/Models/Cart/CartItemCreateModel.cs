@@ -3,5 +3,6 @@
 public class CartItemCreateModel
 {
     public long ProductId { get; set; }
-    public long UserId { get; set; }
+
+    public int Quantity { get; set; }
 }
