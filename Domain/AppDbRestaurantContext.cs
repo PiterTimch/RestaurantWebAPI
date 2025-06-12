@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using Domain.Entities.Cart;
 
 namespace Domain;
 
@@ -17,6 +18,9 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<ProductIngredientEntity> ProductIngredients { get; set; }
     public DbSet<ProductImageEntity> ProductImages { get; set; }
+
+    public DbSet<CartEntity> Carts { get; set; }
+    public DbSet<CartItemEntity> CartItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -36,5 +40,17 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
 
         builder.Entity<ProductIngredientEntity>()
             .HasKey(pi => new { pi.ProductId, pi.IngredientId });
+
+        builder.Entity<UserEntity>()
+            .HasOne(u => u.Cart)
+            .WithOne(c => c.User)
+            .HasForeignKey<CartEntity>(c => c.UserId);
+
+        builder.Entity<CartItemEntity>()
+            .HasOne(ci => ci.Cart)
+            .WithMany(c => c.CartItems)
+            .HasForeignKey(ci => ci.CartId);
+
+
     }
 }
