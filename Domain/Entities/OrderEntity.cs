@@ -13,4 +13,5 @@ public class OrderEntity : BaseEntity<long>
     public OrderStatusEntity? OrderStatus { get; set; }
     public UserEntity? User { get; set; }
 
+    public ICollection<OrderItemEntity>? OrderItems { get; set; }
 }
