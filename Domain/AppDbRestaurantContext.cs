@@ -22,6 +22,8 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<CartEntity> Carts { get; set; }
     public DbSet<CartItemEntity> CartItems { get; set; }
 
+    public DbSet<OrderStatusEntity> OrderStatuses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
