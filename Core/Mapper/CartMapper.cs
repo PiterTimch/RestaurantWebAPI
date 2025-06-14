@@ -15,6 +15,7 @@ public class CartMapper : Profile
             .ForMember(x => x.Price, opt => opt.MapFrom(x => x.Product.Price))
             .ForMember(x => x.ProductId, opt => opt.MapFrom(x => x.Product.Id))
             .ForMember(x => x.CategoryId, opt => opt.MapFrom(x => x.Product.Category!.Id))
+            .ForMember(x => x.SizeName, opt => opt.MapFrom(x => x.Product!.ProductSize!.Name))
             .ForMember(x => x.ImageName, opt => opt.MapFrom(x =>
                 x.Product.ProductImages != null && x.Product.ProductImages.Any()
                     ? x.Product.ProductImages.OrderBy(x => x.Priority).First().Name

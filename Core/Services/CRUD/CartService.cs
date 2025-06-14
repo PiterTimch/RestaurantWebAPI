@@ -10,7 +10,7 @@ namespace Core.Services.CRUD;
 
 public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthService authService) : ICartService
 {
-    public async Task<CartListModel> CreateUpdate(CartItemCreateModel model)
+    public async Task CreateUpdate(CartItemCreateModel model)
     {
         var userId = await authService.GetUserId();
 
@@ -41,7 +41,6 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthSe
         }
 
         await context.SaveChangesAsync();
-        return await GetCartAsync();
     }
 
 
@@ -60,7 +59,7 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthSe
         return model;
     }
 
-    public async Task<CartListModel> RemoveCartItemAsync(long cartItemId)
+    public async Task RemoveCartItemAsync(long cartItemId)
     {
         var entity = await context.CartItems
             .Include(x => x.Cart)
@@ -69,8 +68,6 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthSe
 
         context.CartItems.Update(entity);
         context.SaveChanges();
-
-        return await GetCartAsync();
 
     }
 }

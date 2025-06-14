@@ -29,7 +29,8 @@ namespace RestaurantWebAPI.Controllers
         [HttpPost("createUpdate")]
         public async Task<IActionResult> CreateUpdate([FromBody] CartItemCreateModel model)
         {
-            var cartListModel = await cartService.CreateUpdate(model);
+            await cartService.CreateUpdate(model);
+            
             return Ok();
         }
 
@@ -42,8 +43,9 @@ namespace RestaurantWebAPI.Controllers
             if (!await context.CartItems.AnyAsync(ci => ci.Id == cartItemId && !ci.IsDeleted))
                 return NotFound("Cart item not found or already deleted.");
 
-            var cartListModel = await cartService.RemoveCartItemAsync(cartItemId);
-            return Ok(cartListModel);
+            await cartService.RemoveCartItemAsync(cartItemId);
+
+            return Ok();
         }
     }
 }
