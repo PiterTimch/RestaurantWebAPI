@@ -12,5 +12,6 @@ public class UserEntity : IdentityUser<long>
 
     public virtual CartEntity Cart { get; set; } = new CartEntity();
 
-    public virtual ICollection<UserRoleEntity>? UserRoles { get; set; } 
+    public virtual ICollection<UserRoleEntity>? UserRoles { get; set; }
+    public ICollection<OrderEntity>? Orders { get; set; }
 }

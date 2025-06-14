@@ -23,6 +23,7 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<CartItemEntity> CartItems { get; set; }
 
     public DbSet<OrderStatusEntity> OrderStatuses { get; set; }
+    public DbSet<OrderEntity> Orders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
