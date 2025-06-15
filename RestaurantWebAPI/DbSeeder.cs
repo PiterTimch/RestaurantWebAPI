@@ -250,5 +250,67 @@ public static class DbSeeder
             await context.SaveChangesAsync();
         }
 
+        if (!context.OrderStatuses.Any())
+        {
+            List<string> names = new List<string>() { 
+                "Нове", "Очікує оплати", "Оплачено", 
+                "В обробці", "Готується до відправки", 
+                "Відправлено", "У дорозі", "Доставлено", 
+                "Завершено", "Скасовано (вручну)", "Скасовано (автоматично)", 
+                "Повернення", "В обробці повернення" };
+
+            var orderStatuses = names.Select(name => new OrderStatusEntity { Name = name }).ToList();
+
+            await context.OrderStatuses.AddRangeAsync(orderStatuses);
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.Orders.Any()) 
+        {
+            List<OrderEntity> orders = new List<OrderEntity> 
+            {
+                new OrderEntity
+                {
+                    UserId = 1,
+                    OrderStatusId = 1,
+                },
+                new OrderEntity
+                {
+                    UserId = 1,
+                    OrderStatusId = 10,
+                },
+                new OrderEntity
+                {
+                    UserId = 1,
+                    OrderStatusId = 9,
+                },
+            };
+
+            context.Orders.AddRange(orders);
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.OrderItems.Any())
+        {
+            var orders = await context.Orders.ToListAsync();
+            var products = await context.Products.ToListAsync();
+            foreach (var order in orders)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var randomProduct = products[new Random().Next(products.Count)];
+                    var orderItem = new OrderItemEntity
+                    {
+                        OrderId = order.Id,
+                        ProductId = randomProduct.Id,
+                        PriceBuy = randomProduct.Price,
+                        Count = new Random().Next(1, 5),
+                    };
+                    context.OrderItems.Add(orderItem);
+                    await context.SaveChangesAsync();
+                }
+            }
+            
+        }
     }
 }
