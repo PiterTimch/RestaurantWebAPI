@@ -18,6 +18,14 @@ public class OrderService(IAuthService authService, AppDbRestaurantContext conte
             .ProjectTo<OrderModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 
+        orderModelList = orderModelList
+        .Select(item =>
+        {
+            item.TotalPrice = item.OrderItems.Sum(oi => oi.PriceBuy * oi.Count);
+            return item;
+        })
+        .ToList();
+
         return orderModelList;
     }
 

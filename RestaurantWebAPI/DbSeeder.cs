@@ -292,25 +292,42 @@ public static class DbSeeder
 
         if (!context.OrderItems.Any())
         {
+            var product1 = await context.Products.FirstAsync(x => x.Id == 2);
+            var product2 = await context.Products.FirstAsync(x => x.Id == 3);
+
             var orders = await context.Orders.ToListAsync();
-            var products = await context.Products.ToListAsync();
+            var rand = new Random();
+
             foreach (var order in orders)
             {
-                for (int i = 0; i < 3; i++)
+                var existing = await context.OrderItems.Where(x => x.OrderId == order.Id).ToListAsync();
+                if (existing.Count > 0) continue;
+
+                var count1 = rand.Next(1, 5);
+                var count2 = rand.Next(1, 5);
+                while (count2 == count1) count2 = rand.Next(1, 5);
+
+                var orderItem1 = new OrderItemEntity
                 {
-                    var randomProduct = products[new Random().Next(products.Count)];
-                    var orderItem = new OrderItemEntity
-                    {
-                        OrderId = order.Id,
-                        ProductId = randomProduct.Id,
-                        PriceBuy = randomProduct.Price,
-                        Count = new Random().Next(1, 5),
-                    };
-                    context.OrderItems.Add(orderItem);
-                    await context.SaveChangesAsync();
-                }
+                    OrderId = order.Id,
+                    ProductId = product1.Id,
+                    PriceBuy = product1.Price,
+                    Count = count1,
+                };
+
+                var orderItem2 = new OrderItemEntity
+                {
+                    OrderId = order.Id,
+                    ProductId = product2.Id,
+                    PriceBuy = product2.Price,
+                    Count = count2,
+                };
+
+                context.OrderItems.AddRange(orderItem1, orderItem2);
             }
-            
+
+            await context.SaveChangesAsync();
         }
+
     }
 }

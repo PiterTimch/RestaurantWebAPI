@@ -308,7 +308,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("tblOrderItem");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderStatusEntity", b =>
@@ -624,14 +624,14 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.OrderItemEntity", b =>
                 {
-                    b.HasOne("Domain.Entities.ProductEntity", "Product")
-                        .WithMany()
+                    b.HasOne("Domain.Entities.OrderEntity", "Order")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.OrderEntity", "Order")
-                        .WithMany("OrderItems")
+                    b.HasOne("Domain.Entities.ProductEntity", "Product")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
