@@ -247,6 +247,132 @@ public static class DbSeeder
                 });
             }
 
+            // ---------- Салати ----------
+            var salad = new ProductEntity
+            {
+                Name = "Грецький салат",
+                Slug = "greek-salad",
+                CategoryId = 2,
+                Price = 145,
+                Weight = 350,
+                ProductImages = new List<ProductImageEntity>(),
+                ProductIngredients = new List<ProductIngredientEntity>()
+            };
+
+            var saladImages = new[]
+            {
+                "https://images.unian.net/photos/2019_12/1577273929-5877.jpg?0.9354250072185213",
+                "https://smachno.ua/wp-content/uploads/2009/10/03/Depositphotos_7299284_m-2015.jpg",
+                "https://i.obozrevatel.com/food/recipemain/2018/11/16/screenshot1.png"
+            };
+
+            foreach (var url in saladImages)
+            {
+                try
+                {
+                    var name = await imageService.SaveImageFromUrlAsync(url);
+                    salad.ProductImages.Add(new ProductImageEntity { Name = name });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Failed to download image: {url}\n{ex.Message}");
+                }
+            }
+
+            foreach (var ingredient in ingredients)
+            {
+                salad.ProductIngredients.Add(new ProductIngredientEntity
+                {
+                    IngredientId = ingredient.Id
+                });
+            }
+
+            context.Products.Add(salad);
+
+            // ---------- Суші ----------
+            var sushi = new ProductEntity
+            {
+                Name = "Філадельфія з лососем",
+                Slug = "philadelphia-salmon",
+                CategoryId = 3,
+                Price = 195,
+                Weight = 250,
+                ProductImages = new List<ProductImageEntity>(),
+                ProductIngredients = new List<ProductIngredientEntity>()
+            };
+
+            var sushiImages = new[]
+            {
+                "https://cdn.egersund.ua/a898a417-8e3f-4f08-49ef-a3f38a62a100/1200x900/1200x900",
+                "https://smaki-maki.com/wp-content/uploads/sites/4/2024/10/6.jpg",
+                "https://assets.dots.live/misteram-public/018ef169-39b3-70e8-8511-d084dc42f415-826x0.png"
+            };
+
+            foreach (var url in sushiImages)
+            {
+                try
+                {
+                    var name = await imageService.SaveImageFromUrlAsync(url);
+                    sushi.ProductImages.Add(new ProductImageEntity { Name = name });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Failed to download image: {url}\n{ex.Message}");
+                }
+            }
+
+            foreach (var ingredient in ingredients)
+            {
+                sushi.ProductIngredients.Add(new ProductIngredientEntity
+                {
+                    IngredientId = ingredient.Id
+                });
+            }
+
+            context.Products.Add(sushi);
+
+            // ---------- Паназія ----------
+            var panasia = new ProductEntity
+            {
+                Name = "Локшина з овочами",
+                Slug = "noodles-veggie",
+                CategoryId = 4,
+                Price = 165,
+                Weight = 400,
+                ProductImages = new List<ProductImageEntity>(),
+                ProductIngredients = new List<ProductIngredientEntity>()
+            };
+
+            var panasiaImages = new[]
+            {
+                "https://cdn.smak.menu/images/2888/2888-e750fdb74c770966251150d194c89a17.jpg",
+                "https://katana.ua/wp-content/uploads/2021/09/DSCF4619-min.jpg",
+                "https://assets.dots.live/misteram-public/72a4c5772022f18fe40d5cb5a3a3a9c9.png"
+            };
+
+            foreach (var url in panasiaImages)
+            {
+                try
+                {
+                    var name = await imageService.SaveImageFromUrlAsync(url);
+                    panasia.ProductImages.Add(new ProductImageEntity { Name = name });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Failed to download image: {url}\n{ex.Message}");
+                }
+            }
+
+            foreach (var ingredient in ingredients)
+            {
+                panasia.ProductIngredients.Add(new ProductIngredientEntity
+                {
+                    IngredientId = ingredient.Id
+                });
+            }
+
+            context.Products.Add(panasia);
+
             await context.SaveChangesAsync();
         }
 
@@ -292,38 +418,36 @@ public static class DbSeeder
 
         if (!context.OrderItems.Any())
         {
-            var product1 = await context.Products.FirstAsync(x => x.Id == 2);
-            var product2 = await context.Products.FirstAsync(x => x.Id == 3);
-
+            var products = await context.Products.ToListAsync();
             var orders = await context.Orders.ToListAsync();
             var rand = new Random();
 
             foreach (var order in orders)
             {
-                var existing = await context.OrderItems.Where(x => x.OrderId == order.Id).ToListAsync();
+                var existing = await context.OrderItems
+                    .Where(x => x.OrderId == order.Id)
+                    .ToListAsync();
+
                 if (existing.Count > 0) continue;
 
-                var count1 = rand.Next(1, 5);
-                var count2 = rand.Next(1, 5);
-                while (count2 == count1) count2 = rand.Next(1, 5);
+                var productCount = rand.Next(1, Math.Min(5, products.Count + 1));
 
-                var orderItem1 = new OrderItemEntity
+                var selectedProducts = products
+                    .Where(p => p.Id != 1) 
+                    .OrderBy(_ => rand.Next())
+                    .Take(productCount)
+                    .ToList();
+
+
+                var orderItems = selectedProducts.Select(product => new OrderItemEntity
                 {
                     OrderId = order.Id,
-                    ProductId = product1.Id,
-                    PriceBuy = product1.Price,
-                    Count = count1,
-                };
+                    ProductId = product.Id,
+                    PriceBuy = product.Price,
+                    Count = rand.Next(1, 5),
+                }).ToList();
 
-                var orderItem2 = new OrderItemEntity
-                {
-                    OrderId = order.Id,
-                    ProductId = product2.Id,
-                    PriceBuy = product2.Price,
-                    Count = count2,
-                };
-
-                context.OrderItems.AddRange(orderItem1, orderItem2);
+                context.OrderItems.AddRange(orderItems);
             }
 
             await context.SaveChangesAsync();

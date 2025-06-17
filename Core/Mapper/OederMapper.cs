@@ -12,7 +12,9 @@ public class OederMapper : Profile
             .ForMember(x => x.ProductImage, opt => opt
             .MapFrom(x => x.Product!.ProductImages!.OrderBy(x => x.Priority).First().Name))
             .ForMember(x => x.ProductName, opt => opt
-            .MapFrom(x => x.Product!.Name));
+            .MapFrom(x => x.Product!.Name))
+            .ForMember(x => x.ProductSlug, opt => opt
+            .MapFrom(x => x.Product!.Slug));
 
         CreateMap<OrderEntity, OrderModel>()
             .ForMember(x => x.Status, opt => opt
