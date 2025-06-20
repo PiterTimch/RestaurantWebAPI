@@ -28,7 +28,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = Roles.Admin)]
+        //[Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
         {
             var result = await categoriesService.CreateAsync(model);
@@ -37,7 +37,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize(Roles = Roles.Admin)]
+        //[Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update([FromForm] CategoryEditModel model) 
         {
             var result = await categoriesService.UpdateAsync(model);
@@ -54,7 +54,7 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [HttpDelete("delete")]
-        [Authorize(Roles = Roles.Admin)]
+        //[Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete([FromBody] CategoryDeleteModel model)
         {
             await categoriesService.DeleteAsync(model);

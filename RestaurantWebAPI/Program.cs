@@ -1,7 +1,5 @@
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -9,12 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestaurantWebAPI;
 using Domain;
-using Domain.Entities.Identity;
 using RestaurantWebAPI.Filters;
 using Core.Interfaces;
 using Core.Services;
 using Core.Services.CRUD;
-using Core.Validators.Category;
 using System.Text;
 using Core.Models.Account;
 using Core.Extensions;
@@ -101,6 +97,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
