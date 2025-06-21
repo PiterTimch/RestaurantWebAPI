@@ -73,6 +73,7 @@ public class CategoriesService(
     {
         return await context.Categories
             .AsNoTracking()
+            .Where(x => !x.IsDeleted)
             .ProjectTo<CategoryItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
     }
@@ -124,12 +125,8 @@ public class CategoriesService(
     {
         var entity = await context.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
 
-        if (!string.IsNullOrEmpty(entity.Image))
-        {
-            await imageService.DeleteImageAsync(entity.Image);
-        }
+        entity.IsDeleted = true;
 
-        context.Categories.Remove(entity);
         await context.SaveChangesAsync();
 
     }
