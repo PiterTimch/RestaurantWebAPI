@@ -12,7 +12,7 @@ public class ProductCreateModel
     public decimal Price { get; set; }
     public int Weight { get; set; }
     public long CategoryId { get; set; }
-    public long ProductSizeId { get; set; }
+    public long? ProductSizeId { get; set; }
     public List<long>? IngredientIds { get; set; }
 
     [BindProperty(Name = "imageFiles[]")]

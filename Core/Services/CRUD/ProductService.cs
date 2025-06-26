@@ -48,6 +48,7 @@ public class ProductService(IMapper mapper,
 
     public async Task<ProductItemModel> CreateAsync(ProductCreateModel model)
     {
+
         var entity = mapper.Map<ProductEntity>(model);
         context.Products.Add(entity);
         await context.SaveChangesAsync();
