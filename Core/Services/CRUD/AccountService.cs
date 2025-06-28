@@ -7,12 +7,14 @@ using Core.Interfaces;
 using Core.Models.Account;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Core.Services.CRUD
 {
     public class AccountService(IJWTTokenService tokenService,
         UserManager<UserEntity> userManager, 
         IMapper mapper,
+        IConfiguration configuration,
         IImageService imageService,
         AppDbRestaurantContext context) : IAccountService
     {
@@ -49,7 +51,7 @@ namespace Core.Services.CRUD
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.GetAsync("https://www.googleapis.com/oauth2/v2/userinfo");
+            var response = await httpClient.GetAsync(configuration["GoogleUserInfo"] ?? "https://www.googleapis.com/oauth2/v2/userinfo");
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -61,6 +63,13 @@ namespace Core.Services.CRUD
             var existingUser = await userManager.FindByEmailAsync(googleUser!.Email);
             if (existingUser != null)
             {
+                var userLoginGoogle = await userManager.FindByLoginAsync("Google", googleUser.GoogleId);
+
+                if (userLoginGoogle == null)
+                {
+                    await userManager.AddLoginAsync(existingUser, new UserLoginInfo("Google", googleUser.GoogleId, "Google"));
+                }
+
                 var jwtToken = await tokenService.CreateTokenAsync(existingUser);
                 return jwtToken;
             }
@@ -76,6 +85,9 @@ namespace Core.Services.CRUD
                 var result = await userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+
+                    result = await userManager.AddLoginAsync(user, new UserLoginInfo("Google", googleUser.GoogleId, "Google"));
+
                     await userManager.AddToRoleAsync(user, "User");
                     var jwtToken = await tokenService.CreateTokenAsync(user);
                     return jwtToken;
