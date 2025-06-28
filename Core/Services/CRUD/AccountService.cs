@@ -5,6 +5,8 @@ using Domain;
 using Domain.Entities.Identity;
 using Core.Interfaces;
 using Core.Models.Account;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Core.Services.CRUD
 {
@@ -37,6 +39,49 @@ namespace Core.Services.CRUD
                 var token = await tokenService.CreateTokenAsync(user);
                 return token;
             }
+            return string.Empty;
+        }
+
+        public async Task<string> LoginByGoogle(string token)
+        {
+            using var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await httpClient.GetAsync("https://www.googleapis.com/oauth2/v2/userinfo");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var googleUser = JsonSerializer.Deserialize<GoogleAccountModel>(json);
+
+            var existingUser = await userManager.FindByEmailAsync(googleUser!.Email);
+            if (existingUser != null)
+            {
+                var jwtToken = await tokenService.CreateTokenAsync(existingUser);
+                return jwtToken;
+            }
+            else 
+            {
+                var user = mapper.Map<UserEntity>(googleUser);
+
+                if (!String.IsNullOrEmpty(googleUser.Picture))
+                {
+                    user.Image = await imageService.SaveImageFromUrlAsync(googleUser.Picture);
+                }
+
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "User");
+                    var jwtToken = await tokenService.CreateTokenAsync(user);
+                    return jwtToken;
+                }
+            }
+
             return string.Empty;
         }
 
