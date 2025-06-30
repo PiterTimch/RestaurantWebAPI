@@ -8,6 +8,7 @@ using Core.Models.Account;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Core.Models.Smtp;
 
 namespace Core.Services.CRUD
 {
@@ -16,6 +17,7 @@ namespace Core.Services.CRUD
         IMapper mapper,
         IConfiguration configuration,
         IImageService imageService,
+        ISmtpService smtpService,
         AppDbRestaurantContext context) : IAccountService
     {
         public async Task DeleteUserAsync(DeleteUserModel model)
@@ -23,6 +25,30 @@ namespace Core.Services.CRUD
             var user = await userManager.FindByIdAsync(model.Id.ToString());
 
             await userManager.DeleteAsync(user);
+        }
+
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            string token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = $"{configuration["ClientUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(model.Email)}";
+
+            var emailModel = new EmailMessage
+            {
+                To = model.Email,
+                Subject = "Password Reset",
+                Body = $"<p>Click the link below to reset your password:</p><a href='{resetLink}'>Reset Password</a>"
+            };
+
+            var result = await smtpService.SendEmailAsync(emailModel);
+
+            return result;
         }
 
         public async Task<List<UserItemModel>> GetAllUsersAsync()
@@ -113,6 +139,25 @@ namespace Core.Services.CRUD
                 return token;
             }
             return string.Empty;
+        }
+
+        public async Task<bool> ValidateResetTokenAsync(ValidateResetTokenModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            return await userManager.VerifyUserTokenAsync(
+                user,
+                TokenOptions.DefaultProvider,
+                "ResetPassword",
+                model.Token);
+        }
+
+        public async Task ResetPasswordAsync(ResetPasswordModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+                await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
         }
     }
 }
