@@ -34,8 +34,6 @@ public class UserService(UserManager<UserEntity> userManager,
             var adminUser = users.FirstOrDefault(u => u.Id == user.Id);
             if (adminUser != null)
             {
-                adminUser.Image = user.Image ?? string.Empty;
-
                 if (!string.IsNullOrEmpty(user.PasswordHash))
                 {
                     adminUser.LoginTypes.Add("Password");
