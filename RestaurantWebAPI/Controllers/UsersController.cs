@@ -1,12 +1,14 @@
 ﻿using Core.Interfaces;
 using Core.Models.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantWebAPI.Constants;
 
 namespace RestaurantWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IUserService userService) : Controller
+    public class UsersController(IUserService userService) : Controller
     {
         [HttpGet("list")]
         public async Task<IActionResult> GetAllUsers()
