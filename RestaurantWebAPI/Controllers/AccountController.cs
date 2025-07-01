@@ -82,8 +82,8 @@ namespace RestaurantWebAPI.Controllers
                 });
         }
 
-        [HttpPost("validate-reset-token")]
-        public async Task<IActionResult> ValidateResetToken([FromBody] ValidateResetTokenModel model)
+        [HttpGet("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([FromQuery] ValidateResetTokenModel model)
         {
             bool res = await accountService.ValidateResetTokenAsync(model);
             return Ok(new { IsValid = res });
