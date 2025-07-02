@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Core.Models.Category;
-using Core.Models.Search;
 using Core.Models.Common;
+using Core.Models.Search.Params;
 
 namespace Core.Interfaces;
 

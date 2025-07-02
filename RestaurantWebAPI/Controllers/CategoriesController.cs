@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantWebAPI.Constants;
 using Core.Interfaces;
 using Core.Models.Category;
-using Core.Models.Search;
+using Core.Models.Search.Params;
 
 namespace RestaurantWebAPI.Controllers
 {

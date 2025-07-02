@@ -5,8 +5,8 @@ using Domain;
 using Domain.Entities;
 using Core.Interfaces;
 using Core.Models.Category;
-using Core.Models.Search;
 using Core.Models.Common;
+using Core.Models.Search.Params;
 
 namespace Core.Services.CRUD;
 

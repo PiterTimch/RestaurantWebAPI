@@ -1,4 +1,4 @@
-﻿using Core.Models.Search;
+﻿using Core.Models.Search.Params;
 using Domain;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
