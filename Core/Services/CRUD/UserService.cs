@@ -28,18 +28,22 @@ public class UserService(UserManager<UserEntity> userManager,
             }
         });
 
-         await context.Users
-        .ForEachAsync(user =>
+        var identityUsers = await userManager.Users.AsNoTracking().ToListAsync();
+
+        foreach (var identityUser in identityUsers) // Забрав foreachAsync через конфлікнт з userManager.GetRolesAsync(identityUser)
         {
-            var adminUser = users.FirstOrDefault(u => u.Id == user.Id);
+            var adminUser = users.FirstOrDefault(u => u.Id == identityUser.Id);
             if (adminUser != null)
             {
-                if (!string.IsNullOrEmpty(user.PasswordHash))
+                var roles = await userManager.GetRolesAsync(identityUser);
+                adminUser.Roles = roles.ToList();
+
+                if (!string.IsNullOrEmpty(identityUser.PasswordHash))
                 {
                     adminUser.LoginTypes.Add("Password");
                 }
             }
-        });
+        }
 
         return users;
     }
