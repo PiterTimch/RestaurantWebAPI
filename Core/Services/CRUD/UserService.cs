@@ -50,12 +50,20 @@ public class UserService(UserManager<UserEntity> userManager,
             query = query.Where(u => u.DateCreated <= model.EndDate);
         }
 
-        if (!string.IsNullOrWhiteSpace(model.Role))
+        if (model.Roles != null && model.Roles.Any())
         {
-            var usersInRole = await userManager.GetUsersInRoleAsync(model.Role);
-            var userIds = usersInRole.Select(u => u.Id).ToHashSet();
+            var validRoles = model.Roles.Where(role => role != null);
 
-            query = query.Where(u => userIds.Contains(u.Id));
+            if (validRoles != null && validRoles.Count() > 0)
+            {
+                var usersInRole = (await Task.WhenAll(
+                    model.Roles.Select(role => userManager.GetUsersInRoleAsync(role))
+                )).SelectMany(u => u).ToList();
+
+                var userIds = usersInRole.Select(u => u.Id).ToHashSet();
+
+                query = query.Where(u => userIds.Contains(u.Id));
+            }
         }
 
         var totalCount = await query.CountAsync();
