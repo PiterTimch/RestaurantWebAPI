@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using RestaurantWebAPI.Constants;
+using Core.Constants;
 using Domain;
 using Domain.Entities;
 using Domain.Entities.Identity;

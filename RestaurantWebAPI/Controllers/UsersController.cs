@@ -1,9 +1,10 @@
 ﻿using Core.Interfaces;
 using Core.Models.Account;
 using Core.Models.Search.Params;
+using Core.Models.Seeder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantWebAPI.Constants;
+using Core.Constants;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -24,6 +25,13 @@ namespace RestaurantWebAPI.Controllers
         {
             var result = await userService.SearchUsersAsync(model);
             return Ok(result);
+        }
+
+        [HttpPost("seed")]
+        public async Task<IActionResult> SeedUsers([FromQuery] SeedItemsModel model)
+        {
+            string res = await userService.SeedAsync(model);
+            return Ok(res);
         }
     }
 }

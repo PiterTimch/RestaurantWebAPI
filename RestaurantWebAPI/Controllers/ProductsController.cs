@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantWebAPI.Constants;
+using Core.Constants;
 using Core.Interfaces;
 using Core.Models.Category;
 using Core.Models.Search;
