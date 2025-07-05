@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Constants;
 using Core.Validators.User;
 using Core.Models.AdminUser;
+using System.Diagnostics;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -25,7 +26,15 @@ namespace RestaurantWebAPI.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchUsers([FromQuery] UserSearchModel model)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            stopwatch.Start();
+
             var result = await userService.SearchUsersAsync(model);
+            
+            stopwatch.Stop();
+
+            Console.WriteLine($"Search Users took {stopwatch.ElapsedMilliseconds} ms");
+
             return Ok(result);
         }
 

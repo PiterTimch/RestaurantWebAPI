@@ -56,20 +56,9 @@ public class UserService(UserManager<UserEntity> userManager,
             query = query.Where(u => u.DateCreated <= model.EndDate);
         }
 
-        if (model.Roles != null && model.Roles.Any())
+        if (model?.Roles != null && model.Roles.Any())
         {
-            var validRoles = model.Roles.Where(role => role != null);
-
-            if (validRoles != null && validRoles.Count() > 0)
-            {
-                var usersInRole = (await Task.WhenAll(
-                    model.Roles.Select(role => userManager.GetUsersInRoleAsync(role))
-                )).SelectMany(u => u).ToList();
-
-                var userIds = usersInRole.Select(u => u.Id).ToHashSet();
-
-                query = query.Where(u => userIds.Contains(u.Id));
-            }
+            query = query.Where(u => u.UserRoles.Any(ur => model.Roles.Contains(ur.Role.Name)));
         }
 
         var totalCount = await query.CountAsync();
@@ -85,7 +74,7 @@ public class UserService(UserManager<UserEntity> userManager,
             .ProjectTo<AdminUserItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-        await LoadLoginsAndRolesAsync(users);
+        //await LoadLoginsAndRolesAsync(users);
 
         return new SearchResult<AdminUserItemModel>
         {

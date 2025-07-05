@@ -9,4 +9,6 @@ public class AdminUserItemModel
     public string Image { get; set; } = string.Empty;
     public List<string> Roles { get; set; } = new();
     public List<string> LoginTypes { get; set; } = new();
+    public bool IsGoogleLogin { get; set; } = false;
+    public bool IsPasswordLogin { get; set; } = false;
 }
