@@ -11,5 +11,7 @@ public class AdminUserMapper : Profile
         CreateMap<UserEntity, AdminUserItemModel>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
             .ForMember(dest => dest.LoginTypes, opt => opt.Ignore());
+        CreateMap<AdminUserItemModel, UserEntity>()
+            .ForMember(dest => dest.Image, opt => opt.Ignore());
     }
 }

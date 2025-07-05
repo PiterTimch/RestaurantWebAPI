@@ -189,4 +189,56 @@ public class UserService(UserManager<UserEntity> userManager,
         return elapsedTime;
     }
 
+    public async Task<AdminUserItemModel> EditUserAsync(AdminUserEditModel model)
+    {
+        var existing = await userManager.FindByIdAsync(model.Id.ToString());
+        //existing = mapper.Map(model, existing);
+
+        existing.Email = model.Email;
+        existing.FirstName = model.FirstName;
+        existing.LastName = model.LastName;
+
+        if (model.Image != null) 
+        {
+            imageService.DeleteImageAsync(existing.Image);
+            existing.Image = await imageService.SaveImageAsync(model.Image);
+        }
+
+        if (model.Roles != null)
+        {
+            var currentRoles = await userManager.GetRolesAsync(existing);
+            await userManager.RemoveFromRolesAsync(existing, currentRoles);
+            await userManager.AddToRolesAsync(existing, model.Roles);
+        }
+
+        await userManager.UpdateAsync(existing);
+
+        var updatedUser = mapper.Map<AdminUserItemModel>(existing);
+
+        return updatedUser;
+    }
+
+    public async Task<AdminUserItemModel> GetUserById(int id)
+    {
+        var user = await userManager.FindByIdAsync(id.ToString());
+
+        if (user == null)
+            return null;
+        
+        var adminUser = mapper.Map<AdminUserItemModel>(user);
+
+        await LoadLoginsAndRolesAsync(new List<AdminUserItemModel> { adminUser });
+
+        return adminUser;
+    }
+
+    public async Task DeleteUser(int id)
+    {
+        var user = await userManager.FindByIdAsync(id.ToString());
+
+        if (user != null)
+        {
+            await userManager.DeleteAsync(user);
+        }
+    }
 }
