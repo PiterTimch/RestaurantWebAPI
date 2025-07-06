@@ -23,8 +23,8 @@ namespace RestaurantWebAPI.Controllers
             return Ok(model);
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchUsers([FromQuery] UserSearchModel model)
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchUsers([FromBody] UserSearchModel model)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             stopwatch.Start();
