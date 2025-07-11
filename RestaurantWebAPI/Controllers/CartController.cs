@@ -35,15 +35,10 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPut("removeCartItem/{cartItemId}")]
-        public async Task<IActionResult> RemoveCartItem(long cartItemId)
+        [HttpPut("removeCartItem/{productId}")]
+        public async Task<IActionResult> RemoveCartItem(long productId)
         {
-            if (cartItemId <= 0)
-                return BadRequest("Invalid cart item ID.");
-            if (!await context.CartItems.AnyAsync(ci => ci.Id == cartItemId && !ci.IsDeleted))
-                return NotFound("Cart item not found or already deleted.");
-
-            await cartService.RemoveCartItemAsync(cartItemId);
+            await cartService.RemoveCartItemAsync(productId);
 
             return Ok();
         }

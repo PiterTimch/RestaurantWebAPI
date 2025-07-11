@@ -59,14 +59,12 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthSe
         return model;
     }
 
-    public async Task RemoveCartItemAsync(long cartItemId)
+    public async Task RemoveCartItemAsync(long productId)
     {
-        var entity = await context.CartItems
-            .Include(x => x.Cart)
-            .FirstOrDefaultAsync(x => x.Id == cartItemId);
-        entity!.IsDeleted = true;
-
-        context.CartItems.Update(entity);
+        var toDelete = await context.CartItems
+            .FirstOrDefaultAsync(ci => ci.ProductId == productId);
+        if (toDelete != null)
+            context.CartItems.Remove(toDelete);
         context.SaveChanges();
 
     }
