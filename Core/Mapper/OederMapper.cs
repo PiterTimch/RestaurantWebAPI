@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Models.Order;
 using Domain.Entities;
+using Domain.Entities.Cart;
 
 namespace Core.Mapper;
 
@@ -17,7 +18,17 @@ public class OederMapper : Profile
             .MapFrom(x => x.Product!.Slug));
 
         CreateMap<OrderEntity, OrderModel>()
-            .ForMember(x => x.Status, opt => opt
-            .MapFrom(x => x.OrderStatus!.Name));
+        .ForMember(x => x.Status, opt =>
+            opt.MapFrom(x => x.OrderStatus!.Name))
+        .ForMember(x => x.TotalPrice, opt =>
+            opt.MapFrom(x => x.OrderItems.Sum(oi => oi.PriceBuy * oi.Count)));
+
+
+        CreateMap<CartItemEntity, OrderItemEntity>()
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.PriceBuy, opt => opt
+            .MapFrom(x => x.Product.Price))
+            .ForMember(x => x.Count, opt => opt
+            .MapFrom(x => x.Quantity));
     }
 }
