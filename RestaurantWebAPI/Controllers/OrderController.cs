@@ -91,7 +91,7 @@ namespace RestaurantWebAPI.Controllers
                 return BadRequest("Invalid delivery information.");
             }
             await orderService.AddDeliveryInfoToOrder(model);
-            return Ok("Delivery information added successfully.");
+            return Ok();
         }
     }
 }
