@@ -73,6 +73,11 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
             .WithMany(c => c.CartItems)
             .HasForeignKey(ci => ci.CartId);
 
+        builder.Entity<OrderEntity>()
+            .HasOne(o => o.DeliveryInfo)
+            .WithOne(d => d.Order)
+            .HasForeignKey<DeliveryInfoEntity>(d => d.OrderId);
+
 
     }
 }

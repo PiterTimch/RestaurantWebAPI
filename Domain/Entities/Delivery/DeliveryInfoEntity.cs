@@ -17,6 +17,10 @@ public class DeliveryInfoEntity : BaseEntity<long>
     public long PaymentTypeId { get; set; }
     public PaymentTypeEntity PaymentType { get; set; } = null!;
 
-    public string PhonNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
     public string RecipientName { get; set; } = string.Empty;
+
+    [ForeignKey("Order")]
+    public long? OrderId { get; set; }
+    public OrderEntity? Order { get; set; }
 }

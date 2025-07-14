@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Identity;
+﻿using Domain.Entities.Delivery;
+using Domain.Entities.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
@@ -14,4 +15,8 @@ public class OrderEntity : BaseEntity<long>
     public UserEntity? User { get; set; }
 
     public ICollection<OrderItemEntity>? OrderItems { get; set; }
+
+    [ForeignKey("DeliveryInfo")]
+    public long? DeliveryInfoId { get; set; }
+    public DeliveryInfoEntity? DeliveryInfo { get; set; }
 }
