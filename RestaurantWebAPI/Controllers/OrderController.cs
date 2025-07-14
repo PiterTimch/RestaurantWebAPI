@@ -9,6 +9,7 @@ using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Core.Models.Order;
+using Core.Models.Delivery;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -55,6 +56,42 @@ namespace RestaurantWebAPI.Controllers
                 return Ok(order);
             }
             return NotFound("Order not found.");
+        }
+
+        [Authorize]
+        [HttpGet("cities")]
+        public async Task<IActionResult> GetAllCities()
+        {
+            var cities = await orderService.GetAllCities();
+            return Ok(cities);
+        }
+
+        [Authorize]
+        [HttpGet("post-departments")]
+        public async Task<IActionResult> GetAllPostDepartments()
+        {
+            var postDepartments = await orderService.GetAllPostDepartments();
+            return Ok(postDepartments);
+        }
+
+        [Authorize]
+        [HttpGet("payment-types")]
+        public async Task<IActionResult> GetAllPaymentTypes()
+        {
+            var paymentTypes = await orderService.GetAllPaynamentTypes();
+            return Ok(paymentTypes);
+        }
+
+        [Authorize]
+        [HttpPost("add-delivery-info")]
+        public async Task<IActionResult> AddDeliveryInfoToOrder([FromBody] DeliveryInfoCreateModel model)
+        {
+            if (model == null || model.OrderId <= 0)
+            {
+                return BadRequest("Invalid delivery information.");
+            }
+            await orderService.AddDeliveryInfoToOrder(model);
+            return Ok("Delivery information added successfully.");
         }
     }
 }

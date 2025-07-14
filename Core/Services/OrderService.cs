@@ -1,15 +1,25 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
+using Core.Models.Delivery;
 using Core.Models.Order;
 using Domain;
 using Domain.Entities;
+using Domain.Entities.Delivery;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services;
 
 public class OrderService(IAuthService authService, AppDbRestaurantContext context, IMapper mapper) : IOrderService
 {
+    public Task AddDeliveryInfoToOrder(DeliveryInfoCreateModel model)
+    {
+        var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
+
+        context.DeliveryInfos.Add(deliveryInfo);
+        return context.SaveChangesAsync();
+    }
+
     public async Task<long> CreateOrderFromCart(OrderCreateModel model)
     {
         var cart = await context.Carts
@@ -42,6 +52,33 @@ public class OrderService(IAuthService authService, AppDbRestaurantContext conte
         }
 
         return 0;
+    }
+
+    public Task<List<CityModel>> GetAllCities()
+    {
+        var cities = context.Cities
+            .ProjectTo<CityModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return cities;
+    }
+
+    public Task<List<PaynamentTypeModel>> GetAllPaynamentTypes()
+    {
+        var paymentTypes = context.PaymentTypes
+            .ProjectTo<PaynamentTypeModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return paymentTypes;
+    }
+
+    public Task<List<PostDepartmentModel>> GetAllPostDepartments()
+    {
+        var postDepartments = context.PostDepartments
+            .ProjectTo<PostDepartmentModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return postDepartments;
     }
 
     public async Task<OrderModel> GetOrderByIdAsync(long orderId)

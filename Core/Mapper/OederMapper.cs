@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Core.Models.Delivery;
 using Core.Models.Order;
 using Domain.Entities;
 using Domain.Entities.Cart;
+using Domain.Entities.Delivery;
 
 namespace Core.Mapper;
 
@@ -30,5 +32,13 @@ public class OederMapper : Profile
             .MapFrom(x => x.Product.Price))
             .ForMember(x => x.Count, opt => opt
             .MapFrom(x => x.Quantity));
+
+        CreateMap<DeliveryInfoCreateModel, DeliveryInfoEntity>();
+
+        CreateMap<DeliveryInfoEntity, DeliveryInfoModel>();
+
+        CreateMap<CityEntity, CityModel>();
+        CreateMap<PostDepartmentEntity, PostDepartmentModel>();
+        CreateMap<PaymentTypeEntity, PaynamentTypeModel>();
     }
 }
