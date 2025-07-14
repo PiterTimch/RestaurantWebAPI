@@ -3,6 +3,7 @@ using System;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbRestaurantContext))]
-    partial class AppDbRestaurantContextModelSnapshot : ModelSnapshot
+    [Migration("20250714041046_add-delivery-components-tables")]
+    partial class adddeliverycomponentstables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,48 +137,6 @@ namespace Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblCities");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Delivery.DeliveryInfoEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<long>("PaymentTypeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PhonNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("PostDepartmentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("RecipientName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("PaymentTypeId");
-
-                    b.HasIndex("PostDepartmentId");
-
-                    b.ToTable("tblDeliveryInfos");
                 });
 
             modelBuilder.Entity("Domain.Entities.Delivery.PaymentTypeEntity", b =>
@@ -703,33 +664,6 @@ namespace Domain.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Delivery.DeliveryInfoEntity", b =>
-                {
-                    b.HasOne("Domain.Entities.Delivery.CityEntity", "City")
-                        .WithMany("DeliveryInfos")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Delivery.PaymentTypeEntity", "PaymentType")
-                        .WithMany("DeliveryInfos")
-                        .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Delivery.PostDepartmentEntity", "PostDepartment")
-                        .WithMany("DeliveryInfos")
-                        .HasForeignKey("PostDepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-
-                    b.Navigation("PaymentType");
-
-                    b.Navigation("PostDepartment");
-                });
-
             modelBuilder.Entity("Domain.Entities.Identity.UserLoginEntity", b =>
                 {
                     b.HasOne("Domain.Entities.Identity.UserEntity", "User")
@@ -884,21 +818,6 @@ namespace Domain.Migrations
             modelBuilder.Entity("Domain.Entities.CategoryEntity", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Delivery.CityEntity", b =>
-                {
-                    b.Navigation("DeliveryInfos");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Delivery.PaymentTypeEntity", b =>
-                {
-                    b.Navigation("DeliveryInfos");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Delivery.PostDepartmentEntity", b =>
-                {
-                    b.Navigation("DeliveryInfos");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.RoleEntity", b =>
