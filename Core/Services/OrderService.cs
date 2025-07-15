@@ -12,14 +12,6 @@ namespace Core.Services;
 
 public class OrderService(IAuthService authService, AppDbRestaurantContext context, IMapper mapper) : IOrderService
 {
-    public Task AddDeliveryInfoToOrder(DeliveryInfoCreateModel model)
-    {
-        var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
-
-        context.DeliveryInfos.Add(deliveryInfo);
-        return context.SaveChangesAsync();
-    }
-
     public async Task<long> CreateOrderFromCart(OrderCreateModel model)
     {
         var cart = await context.Carts
@@ -103,6 +95,22 @@ public class OrderService(IAuthService authService, AppDbRestaurantContext conte
             .ToListAsync();
 
         return orderModelList;
+    }
+
+    public async Task AddDeliveryInfoToOrder(DeliveryInfoCreateModel model)
+    {
+        var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
+
+        context.DeliveryInfos.Add(deliveryInfo);
+
+        var order = context.Orders
+            .FirstOrDefault(x => x.Id == model.OrderId);
+
+        if (order != null)
+            order.OrderStatus = context.OrderStatuses
+            .FirstOrDefault(x => x.Name == "В обробці");
+
+        await context.SaveChangesAsync();
     }
 
 }
