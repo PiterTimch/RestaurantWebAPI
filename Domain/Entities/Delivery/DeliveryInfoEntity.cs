@@ -1,10 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Delivery;
 
 [Table("tblDeliveryInfos")]
-public class DeliveryInfoEntity : BaseEntity<long>
+public class DeliveryInfoEntity
 {
+    [Key]
+    [ForeignKey("Order")]
+    public long? OrderId { get; set; }
+    public OrderEntity? Order { get; set; }
+
     [ForeignKey("City")]
     public long CityId { get; set; }
     public CityEntity City { get; set; } = null!;
@@ -19,8 +25,4 @@ public class DeliveryInfoEntity : BaseEntity<long>
 
     public string PhoneNumber { get; set; } = string.Empty;
     public string RecipientName { get; set; } = string.Empty;
-
-    [ForeignKey("Order")]
-    public long? OrderId { get; set; }
-    public OrderEntity? Order { get; set; }
 }

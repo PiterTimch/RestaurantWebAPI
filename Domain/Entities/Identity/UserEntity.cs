@@ -11,8 +11,7 @@ public class UserEntity : IdentityUser<long>
     public string? LastName { get; set; } = string.Empty;
     public string? Image { get; set; } = string.Empty;
 
-    public virtual CartEntity Cart { get; set; } = new CartEntity();
-
+    public ICollection<CartEntity>? Carts { get; set; }
     public virtual ICollection<UserRoleEntity>? UserRoles { get; set; }
     public ICollection<OrderEntity>? Orders { get; set; }
     public ICollection<UserLoginEntity>? UserLogins { get; set; }

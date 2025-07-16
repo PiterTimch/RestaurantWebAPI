@@ -22,10 +22,7 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<ProductIngredientEntity> ProductIngredients { get; set; }
     public DbSet<ProductImageEntity> ProductImages { get; set; }
-
     public DbSet<CartEntity> Carts { get; set; }
-    public DbSet<CartItemEntity> CartItems { get; set; }
-
     public DbSet<OrderStatusEntity> OrderStatuses { get; set; }
     public DbSet<OrderEntity> Orders { get; set; }
     public DbSet<OrderItemEntity> OrderItems { get; set; }
@@ -33,8 +30,9 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
     public DbSet<CityEntity> Cities { get; set; }
     public DbSet<PostDepartmentEntity> PostDepartments { get; set; }
     public DbSet<PaymentTypeEntity> PaymentTypes { get; set; }
-
     public DbSet<DeliveryInfoEntity> DeliveryInfos { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -63,21 +61,7 @@ public class AppDbRestaurantContext : IdentityDbContext<UserEntity, RoleEntity, 
         builder.Entity<ProductIngredientEntity>()
             .HasKey(pi => new { pi.ProductId, pi.IngredientId });
 
-        builder.Entity<UserEntity>()
-            .HasOne(u => u.Cart)
-            .WithOne(c => c.User)
-            .HasForeignKey<CartEntity>(c => c.UserId);
-
-        builder.Entity<CartItemEntity>()
-            .HasOne(ci => ci.Cart)
-            .WithMany(c => c.CartItems)
-            .HasForeignKey(ci => ci.CartId);
-
-        builder.Entity<OrderEntity>()
-            .HasOne(o => o.DeliveryInfo)
-            .WithOne(d => d.Order)
-            .HasForeignKey<DeliveryInfoEntity>(d => d.OrderId);
-
-
+        builder.Entity<CartEntity>()
+            .HasKey(pi => new { pi.ProductId, pi.UserId });
     }
 }

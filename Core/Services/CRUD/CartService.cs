@@ -13,59 +13,44 @@ public class CartService(IMapper mapper, AppDbRestaurantContext context, IAuthSe
     public async Task CreateUpdate(CartItemCreateModel model)
     {
         var userId = await authService.GetUserId();
-
-        var cart = await context.Carts
-            .Include(c => c.CartItems.Where(ci => !ci.IsDeleted))
-            .FirstOrDefaultAsync(x => x.UserId == userId);
-
-        if (cart == null)
-            throw new Exception("Cart not found.");
-
-        var existingItem = cart.CartItems
-            .FirstOrDefault(i => i.ProductId == model.ProductId);
-
-        if (existingItem != null)
-        {
-            existingItem.Quantity = model.Quantity;
-            context.CartItems.Update(existingItem);
-        }
+        var entity = context.Carts
+            .SingleOrDefault(x => x.UserId == userId && x.ProductId == model.ProductId);
+        if (entity != null)
+            entity.Quantity = model.Quantity;
         else
         {
-            var newItem = new CartItemEntity
+            entity = new CartEntity
             {
+                UserId = userId,
                 ProductId = model.ProductId,
-                Quantity = model.Quantity,
-                CartId = cart.Id
+                Quantity = model.Quantity
             };
-            context.CartItems.Add(newItem);
+            context.Carts.Add(entity);
         }
-
         await context.SaveChangesAsync();
     }
 
-
-    public async Task<CartListModel> GetCartAsync()
+    public async Task<List<CartItemModel>> GetCartItems()
     {
         var userId = await authService.GetUserId();
 
-        var model = await context.Carts
+        var items = await context.Carts
             .Where(x => x.UserId == userId)
-            .ProjectTo<CartListModel>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync();
+            .ProjectTo<CartItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
 
-        model.TotalPrice = model.Items
-            .Sum(x => x.Quantity * x.Price);
-
-        return model;
+        return items;
     }
 
-    public async Task RemoveCartItemAsync(long productId)
+    public async Task Delete(long id)
     {
-        var toDelete = await context.CartItems
-            .FirstOrDefaultAsync(ci => ci.ProductId == productId);
-        if (toDelete != null)
-            context.CartItems.Remove(toDelete);
-        context.SaveChanges();
-
+        var userId = await authService.GetUserId();
+        var item = await context.Carts
+            .SingleOrDefaultAsync(x => x.UserId == userId && x.ProductId == id);
+        if (item != null)
+        {
+            context.Carts.Remove(item);
+            await context.SaveChangesAsync();
+        }
     }
 }

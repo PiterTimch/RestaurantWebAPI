@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface ICartService
 {
-    Task<CartListModel> GetCartAsync();
     Task CreateUpdate(CartItemCreateModel model);
-    Task RemoveCartItemAsync(long productId);
+    Task<List<CartItemModel>> GetCartItems();
+    Task Delete(long id);
 }

@@ -28,34 +28,10 @@ namespace RestaurantWebAPI.Controllers
 
         [Authorize]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateOrderFromCart([FromBody] OrderCreateModel model)
+        public async Task<IActionResult> CreateOrder([FromBody] DeliveryInfoCreateModel model)
         {
-            if (model.CartId <= 0)
-            {
-                return BadRequest("Invalid cart ID.");
-            }
-            var orderId = await orderService.CreateOrderFromCart(model);
-            if (orderId > 0)
-            {
-                return Ok(new { OrderId = orderId });
-            }
-            return BadRequest("Failed to create order from cart.");
-        }
-
-        [Authorize]
-        [HttpGet("get/{orderId}")]
-        public async Task<IActionResult> GetOrderById(long orderId)
-        {
-            if (orderId <= 0)
-            {
-                return BadRequest("Invalid order ID.");
-            }
-            var order = await orderService.GetOrderByIdAsync(orderId);
-            if (order != null)
-            {
-                return Ok(order);
-            }
-            return NotFound("Order not found.");
+            await orderService.CreateOrder(model);
+            return Ok();
         }
 
         [Authorize]
@@ -80,18 +56,6 @@ namespace RestaurantWebAPI.Controllers
         {
             var paymentTypes = await orderService.GetAllPaynamentTypes();
             return Ok(paymentTypes);
-        }
-
-        [Authorize]
-        [HttpPost("add-delivery-info")]
-        public async Task<IActionResult> AddDeliveryInfoToOrder([FromBody] DeliveryInfoCreateModel model)
-        {
-            if (model == null || model.OrderId <= 0)
-            {
-                return BadRequest("Invalid delivery information.");
-            }
-            await orderService.AddDeliveryInfoToOrder(model);
-            return Ok();
         }
     }
 }

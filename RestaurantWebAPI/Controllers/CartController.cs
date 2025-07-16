@@ -20,7 +20,7 @@ namespace RestaurantWebAPI.Controllers
         [HttpGet("getCart")]
         public async Task<IActionResult> GetCart()
         {
-            var model = await cartService.GetCartAsync();
+            var model = await cartService.GetCartItems();
 
             return Ok(model);
         }
@@ -35,11 +35,21 @@ namespace RestaurantWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPut("removeCartItem/{productId}")]
-        public async Task<IActionResult> RemoveCartItem(long productId)
+        [HttpPost("add-range")]
+        public async Task<IActionResult> AddRange([FromBody] List<CartItemCreateModel> modelItems)
         {
-            await cartService.RemoveCartItemAsync(productId);
+            foreach (var item in modelItems)
+            {
+                await cartService.CreateUpdate(item);
+            }
+            return Ok();
+        }
 
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveCartItem(long id)
+        {
+            await cartService.Delete(id);
             return Ok();
         }
     }

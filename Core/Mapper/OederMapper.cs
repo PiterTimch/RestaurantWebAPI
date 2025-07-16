@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Models.Cart;
 using Core.Models.Delivery;
 using Core.Models.Order;
 using Domain.Entities;
@@ -26,10 +27,9 @@ public class OederMapper : Profile
             opt.MapFrom(x => x.OrderItems.Sum(oi => oi.PriceBuy * oi.Count)));
 
 
-        CreateMap<CartItemEntity, OrderItemEntity>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
+        CreateMap<CartItemModel, OrderItemEntity>()
             .ForMember(x => x.PriceBuy, opt => opt
-            .MapFrom(x => x.Product.Price))
+            .MapFrom(x => x.Price))
             .ForMember(x => x.Count, opt => opt
             .MapFrom(x => x.Quantity));
 
