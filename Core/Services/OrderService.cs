@@ -19,9 +19,12 @@ public class OrderService(IAuthService authService,
 {
     public async Task CreateOrder(DeliveryInfoCreateModel model)
     {
-        var user = await userManager.FindByIdAsync((await authService.GetUserId()).ToString());
+        var userId = (await authService.GetUserId()).ToString();
+        var user = await context.Users
+            .Include(u => u.Carts)
+            .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
 
-        if (user != null && user.Carts != null)
+        if (user != null && user.Carts != null && user.Carts.Any())
         {
             var order = new OrderEntity
             {
@@ -43,7 +46,23 @@ public class OrderService(IAuthService authService,
             await context.SaveChangesAsync();
 
 
-            await AddDeliveryInfoToOrder(model);
+            var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
+            deliveryInfo.OrderId = order.Id;
+
+            context.DeliveryInfos.Add(deliveryInfo);
+
+            if (order != null)
+                order.OrderStatus = context.OrderStatuses
+                .FirstOrDefault(x => x.Name == "В обробці");
+
+            user.Carts.Clear();
+
+            await context.SaveChangesAsync();
+
+        }
+        else
+        {
+            throw new InvalidOperationException("Користувач не знайдений або кошик порожній.");
         }
     }
 
@@ -84,22 +103,6 @@ public class OrderService(IAuthService authService,
             .ToListAsync();
 
         return orderModelList;
-    }
-
-    public async Task AddDeliveryInfoToOrder(DeliveryInfoCreateModel model)
-    {
-        var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
-
-        context.DeliveryInfos.Add(deliveryInfo);
-
-        var order = context.Orders
-            .FirstOrDefault(x => x.Id == model.OrderId);
-
-        if (order != null)
-            order.OrderStatus = context.OrderStatuses
-            .FirstOrDefault(x => x.Name == "В обробці");
-
-        await context.SaveChangesAsync();
     }
 
 }

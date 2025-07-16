@@ -30,8 +30,15 @@ namespace RestaurantWebAPI.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] DeliveryInfoCreateModel model)
         {
-            await orderService.CreateOrder(model);
-            return Ok();
+            try
+            {
+                await orderService.CreateOrder(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]

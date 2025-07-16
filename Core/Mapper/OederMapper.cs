@@ -27,9 +27,9 @@ public class OederMapper : Profile
             opt.MapFrom(x => x.OrderItems.Sum(oi => oi.PriceBuy * oi.Count)));
 
 
-        CreateMap<CartItemModel, OrderItemEntity>()
+        CreateMap<CartEntity, OrderItemEntity>()
             .ForMember(x => x.PriceBuy, opt => opt
-            .MapFrom(x => x.Price))
+            .MapFrom(x => x.Product!.Price))
             .ForMember(x => x.Count, opt => opt
             .MapFrom(x => x.Quantity));
 
