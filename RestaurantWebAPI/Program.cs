@@ -75,6 +75,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<INovaPoshtaService, NovaPoshtaService>();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddHttpContextAccessor();
 

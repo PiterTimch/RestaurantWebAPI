@@ -46,6 +46,13 @@ public class OrderService(IAuthService authService,
             await context.OrderItems.AddRangeAsync(orderItems);
             await context.SaveChangesAsync();
 
+            var postDepartment = await context.PostDepartments
+                .FirstOrDefaultAsync(pd => pd.Id == model.PostDepartmentId);
+
+            if (postDepartment.CityId != model.CityId)
+            {
+                throw new InvalidOperationException("Відділення не належить до вказаного міста.");
+            }
 
             var deliveryInfo = mapper.Map<DeliveryInfoEntity>(model);
             deliveryInfo.OrderId = order.Id;
