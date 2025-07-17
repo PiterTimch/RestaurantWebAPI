@@ -2,6 +2,6 @@
 
 public class PostDepartmentSearchModel
 {
-    public string? Name { get; set; }
+    public string? CityName { get; set; }
     public int ItemPerPage { get; set; } = 5;
 }

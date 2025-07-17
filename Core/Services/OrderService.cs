@@ -104,12 +104,13 @@ public class OrderService(IAuthService authService,
     {
         var query = context.PostDepartments.AsQueryable();
 
-        if (!string.IsNullOrEmpty(model.Name))
+        if (!string.IsNullOrEmpty(model.CityName))
         {
-            query = query.Where(pd => pd.Name.ToLower().Contains(model.Name.ToLower()));
+            query = query.Where(pd => pd.City!.Name.ToLower().Contains(model.CityName.ToLower()));
         }
 
         var postDepartments = query
+            .Include(pd => pd.City)
             .ProjectTo<PostDepartmentModel>(mapper.ConfigurationProvider)
             .Take(model.ItemPerPage)
             .ToListAsync();

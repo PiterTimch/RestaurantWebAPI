@@ -8,8 +8,9 @@ using Domain.Entities.Delivery;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Net.Http;
 using System.Text;
+
+namespace Core.Services;
 
 public class NovaPoshtaService(IMapper mapper, IHttpClientFactory httpClientFactory, AppDbRestaurantContext context) : INovaPoshtaService
 {

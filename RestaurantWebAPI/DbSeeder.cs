@@ -455,11 +455,6 @@ public static class DbSeeder
             await context.SaveChangesAsync();
         }
 
-        if (!context.Cities.Any())
-        {
-            await novaPosta.FetchCitiesAsync();
-        }
-
         if (!context.PostDepartments.Any())
         {
             await novaPosta.FetchDepartmentsAsync();
