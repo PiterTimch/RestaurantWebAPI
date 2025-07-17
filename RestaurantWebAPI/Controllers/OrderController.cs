@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Core.Models.Order;
 using Core.Models.Delivery;
+using Core.Models.Search.Params;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -43,18 +44,26 @@ namespace RestaurantWebAPI.Controllers
 
         [Authorize]
         [HttpGet("cities")]
-        public async Task<IActionResult> GetAllCities()
+        public async Task<IActionResult> GetAllCities([FromQuery] CitySearchModel model)
         {
-            var cities = await orderService.GetAllCities();
+            if (model.ItemPerPage < 1)
+            {
+                return BadRequest("ItemPerPage must be greater than 0.");
+            }
+            var cities = await orderService.GetCities(model);
             return Ok(cities);
         }
 
         [Authorize]
         [HttpGet("post-departments")]
-        public async Task<IActionResult> GetAllPostDepartments()
+        public async Task<IActionResult> GetAllPostDepartments([FromQuery] PostDepartmentSearchModel model)
         {
-            var postDepartments = await orderService.GetAllPostDepartments();
-            return Ok(postDepartments);
+            if (model.ItemPerPage < 1)
+            {
+                return BadRequest("ItemPerPage must be greater than 0.");
+            }
+            var pds = await orderService.GetPostDepartments(model);
+            return Ok(pds);
         }
 
         [Authorize]

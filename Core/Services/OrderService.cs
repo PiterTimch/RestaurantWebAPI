@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
 using Core.Models.Delivery;
 using Core.Models.Order;
+using Core.Models.Search.Params;
 using Domain;
 using Domain.Entities;
 using Domain.Entities.Delivery;
@@ -66,10 +67,18 @@ public class OrderService(IAuthService authService,
         }
     }
 
-    public Task<List<CityModel>> GetAllCities()
+    public Task<List<CityModel>> GetCities(CitySearchModel model)
     {
-        var cities = context.Cities
+        var query = context.Cities.AsQueryable();
+
+        if (!string.IsNullOrEmpty(model.Name))
+        {
+            query = query.Where(c => c.Name.ToLower().Contains(model.Name.ToLower()));
+        }
+
+        var cities = query
             .ProjectTo<CityModel>(mapper.ConfigurationProvider)
+            .Take(model.ItemPerPage)
             .ToListAsync();
 
         return cities;
@@ -84,10 +93,18 @@ public class OrderService(IAuthService authService,
         return paymentTypes;
     }
 
-    public Task<List<PostDepartmentModel>> GetAllPostDepartments()
+    public Task<List<PostDepartmentModel>> GetPostDepartments(PostDepartmentSearchModel model)
     {
-        var postDepartments = context.PostDepartments
+        var query = context.PostDepartments.AsQueryable();
+
+        if (!string.IsNullOrEmpty(model.Name))
+        {
+            query = query.Where(pd => pd.Name.ToLower().Contains(model.Name.ToLower()));
+        }
+
+        var postDepartments = query
             .ProjectTo<PostDepartmentModel>(mapper.ConfigurationProvider)
+            .Take(model.ItemPerPage)
             .ToListAsync();
 
         return postDepartments;

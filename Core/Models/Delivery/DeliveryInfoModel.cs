@@ -2,7 +2,6 @@
 
 public class DeliveryInfoModel
 {
-    public long Id { get; set; }
     public string RecipientName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
 
