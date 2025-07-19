@@ -58,10 +58,6 @@ namespace RestaurantWebAPI.Controllers
         [HttpGet("post-departments")]
         public async Task<IActionResult> GetAllPostDepartments([FromQuery] PostDepartmentSearchModel model)
         {
-            if (model.ItemPerPage < 1)
-            {
-                return BadRequest("ItemPerPage must be greater than 0.");
-            }
             var pds = await orderService.GetPostDepartments(model);
             return Ok(pds);
         }

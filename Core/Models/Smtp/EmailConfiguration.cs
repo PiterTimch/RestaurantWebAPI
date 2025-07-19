@@ -21,5 +21,5 @@ public class EmailConfiguration
     /// <summary>
     /// Password for the email user
     /// </summary>
-    public const string Password = "0Men95VpchCY4XDH";
+    public const string Password = "0kWnYW31iKoEjfU5";
 }
