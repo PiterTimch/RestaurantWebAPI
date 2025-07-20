@@ -35,7 +35,10 @@ public class OederMapper : Profile
 
         CreateMap<DeliveryInfoCreateModel, DeliveryInfoEntity>();
 
-        CreateMap<DeliveryInfoEntity, DeliveryInfoModel>();
+        CreateMap<DeliveryInfoEntity, DeliveryInfoModel>()
+            .ForMember(dest => dest.City, opt => opt
+            .MapFrom(src => src.PostDepartment.City));
+
 
         CreateMap<CityEntity, CityModel>();
         CreateMap<PostDepartmentEntity, PostDepartmentModel>();
