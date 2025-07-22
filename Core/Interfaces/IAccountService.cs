@@ -12,5 +12,6 @@ namespace Core.Interfaces
         public Task<bool> ForgotPasswordAsync(ForgotPasswordModel model);
         public Task<bool> ValidateResetTokenAsync(ValidateResetTokenModel model);
         public Task ResetPasswordAsync(ResetPasswordModel model);
+        public Task ChangePasswordAsync(ResetPasswordModel model);
     }
 }

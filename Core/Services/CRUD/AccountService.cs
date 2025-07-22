@@ -13,11 +13,12 @@ using Core.Models.Smtp;
 namespace Core.Services.CRUD
 {
     public class AccountService(IJWTTokenService tokenService,
-        UserManager<UserEntity> userManager, 
+        UserManager<UserEntity> userManager,
         IMapper mapper,
         IConfiguration configuration,
         IImageService imageService,
         ISmtpService smtpService,
+        IAuthService authService,
         AppDbRestaurantContext context) : IAccountService
     {
         public async Task DeleteUserAsync(DeleteUserModel model)
@@ -99,7 +100,7 @@ namespace Core.Services.CRUD
                 var jwtToken = await tokenService.CreateTokenAsync(existingUser);
                 return jwtToken;
             }
-            else 
+            else
             {
                 var user = mapper.Map<UserEntity>(googleUser);
 
@@ -126,7 +127,7 @@ namespace Core.Services.CRUD
         public async Task<string> RegisterAsync(RegisterModel model)
         {
             var user = mapper.Map<UserEntity>(model);
-            if (model.ImageFile != null) 
+            if (model.ImageFile != null)
             {
                 user.Image = await imageService.SaveImageAsync(model.ImageFile);
             }
@@ -154,10 +155,21 @@ namespace Core.Services.CRUD
 
         public async Task ResetPasswordAsync(ResetPasswordModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var user = await userManager.FindByEmailAsync(model.Email!);
 
             if (user != null)
-                await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                await userManager.ResetPasswordAsync(user, model.Token!, model.NewPassword);
+        }
+
+        public async Task ChangePasswordAsync(ResetPasswordModel model)
+        {
+            var user = await userManager.FindByIdAsync((await authService.GetUserId()).ToString());
+
+            if (user != null)
+            {
+                var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                await userManager.ResetPasswordAsync(user, token, model.NewPassword);
+            }
         }
     }
 }

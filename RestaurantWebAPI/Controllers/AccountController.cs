@@ -4,6 +4,7 @@ using Domain.Entities.Identity;
 using Core.Interfaces;
 using Core.Models.Account;
 using Core.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -93,6 +94,14 @@ namespace RestaurantWebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
         {
             await accountService.ResetPasswordAsync(model);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ResetPasswordModel model)
+        {
+            await accountService.ChangePasswordAsync(model);
             return Ok();
         }
 
