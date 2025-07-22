@@ -457,7 +457,7 @@ public static class DbSeeder
 
         if (!context.PostDepartments.Any())
         {
-            await novaPosta.FetchDepartmentsAsync();
+            //await novaPosta.FetchDepartmentsAsync();
         }
 
         if (!context.PaymentTypes.Any())

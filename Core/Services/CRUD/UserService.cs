@@ -221,7 +221,7 @@ public class UserService(UserManager<UserEntity> userManager,
         return adminUser;
     }
 
-    public async Task DeleteUser(int id)
+    public async Task DeleteUser(long id)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
 

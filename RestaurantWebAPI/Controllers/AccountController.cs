@@ -5,21 +5,14 @@ using Core.Interfaces;
 using Core.Models.Account;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Core.Models.AdminUser;
 
 namespace RestaurantWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAccountService accountService) : Controller
+    public class AccountController(IAccountService accountService, IUserService userService, IAuthService authService) : Controller
     {
-        [HttpGet("list")]
-        public async Task<IActionResult> GetAllUsers() 
-        {
-            var model = await accountService.GetAllUsersAsync();
-
-            return Ok(model);
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -105,11 +98,23 @@ namespace RestaurantWebAPI.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel model)
+        public async Task<IActionResult> DeleteAccount()
         {
-            await accountService.DeleteUserAsync(model);
-            return Ok($"Користувача з id {model.Id} успішно видалено");
+            var userId = await authService.GetUserId();
+            await userService.DeleteUser(userId);
+            return Ok($"Користувача успішно видалено");
+        }
+
+        [Authorize]
+        [HttpPut("edit")]
+        public async Task<IActionResult> EditAccount([FromBody] AdminUserEditModel model)
+        {
+            var userId = await authService.GetUserId();
+            model.Id = userId;
+            var updatedUser = await userService.EditUserAsync(model);
+            return Ok(updatedUser);
         }
     }
 }

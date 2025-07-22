@@ -21,13 +21,6 @@ namespace Core.Services.CRUD
         IAuthService authService,
         AppDbRestaurantContext context) : IAccountService
     {
-        public async Task DeleteUserAsync(DeleteUserModel model)
-        {
-            var user = await userManager.FindByIdAsync(model.Id.ToString());
-
-            await userManager.DeleteAsync(user);
-        }
-
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
@@ -50,14 +43,6 @@ namespace Core.Services.CRUD
             var result = await smtpService.SendEmailAsync(emailModel);
 
             return result;
-        }
-
-        public async Task<List<UserItemModel>> GetAllUsersAsync()
-        {
-            var entities = await context.Users.ToListAsync();
-            var model = mapper.Map<List<UserItemModel>>(entities);
-
-            return model;
         }
 
         public async Task<string> LoginAsync(LoginModel model)

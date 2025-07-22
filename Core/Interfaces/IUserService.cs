@@ -10,7 +10,7 @@ public interface IUserService
     Task<List<AdminUserItemModel>> GetAllUsersAsync();
     Task<SearchResult<AdminUserItemModel>> SearchUsersAsync(UserSearchModel model);
     Task<AdminUserItemModel> GetUserById(int id);
-    Task DeleteUser(int id);
+    Task DeleteUser(long id);
     Task<string> SeedAsync(SeedItemsModel model);
     Task<AdminUserItemModel> EditUserAsync(AdminUserEditModel model);
 }
