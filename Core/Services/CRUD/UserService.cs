@@ -181,11 +181,17 @@ public class UserService(UserManager<UserEntity> userManager,
     public async Task<AdminUserItemModel> EditUserAsync(AdminUserEditModel model)
     {
         var existing = await userManager.FindByIdAsync(model.Id.ToString());
-        //existing = mapper.Map(model, existing);
+        var userLogins = await context.UserLogins
+            .FirstOrDefaultAsync(ul => ul.UserId == existing.Id);
 
-        existing.Email = model.Email;
-        existing.FirstName = model.FirstName;
-        existing.LastName = model.LastName;
+        if (userLogins != null && userLogins.LoginProvider == "Google")
+            throw new InvalidOperationException("Cannot edit email for Google login user");
+
+        existing = mapper.Map(model, existing);
+
+        //existing.Email = model.Email;
+        //existing.FirstName = model.FirstName;
+        //existing.LastName = model.LastName;
 
         if (model.Image != null) 
         {

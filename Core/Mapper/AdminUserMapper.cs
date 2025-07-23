@@ -16,5 +16,8 @@ public class AdminUserMapper : Profile
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles!.Select(ur => ur.Role.Name).ToList()));
         CreateMap<AdminUserItemModel, UserEntity>()
             .ForMember(dest => dest.Image, opt => opt.Ignore());
+
+        CreateMap<AdminUserEditModel, UserEntity>()
+            .ForMember(dest => dest.Image, opt => opt.Ignore());
     }
 }

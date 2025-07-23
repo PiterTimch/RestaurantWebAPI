@@ -109,12 +109,19 @@ namespace RestaurantWebAPI.Controllers
 
         [Authorize]
         [HttpPut("edit")]
-        public async Task<IActionResult> EditAccount([FromBody] AdminUserEditModel model)
+        public async Task<IActionResult> EditAccount([FromForm] AdminUserEditModel model)
         {
-            var userId = await authService.GetUserId();
-            model.Id = userId;
-            var updatedUser = await userService.EditUserAsync(model);
-            return Ok(updatedUser);
+            try
+            {
+                var userId = await authService.GetUserId();
+                model.Id = userId;
+                await userService.EditUserAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -10,12 +10,6 @@ public class AdminUserEditValidator : AbstractValidator<AdminUserEditModel>
 {
     public AdminUserEditValidator(AppDbRestaurantContext db)
     {
-        RuleFor(x => x.Id)
-            .MustAsync(async (id, cancellation) =>
-                await db.Users.AnyAsync(u => u.Id == id, cancellation))
-            .WithMessage("Користувача не знайдено.")
-            .WithName("Id");
-
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email є обов’язковим.")
             .EmailAddress().WithMessage("Некоректний формат email.");
