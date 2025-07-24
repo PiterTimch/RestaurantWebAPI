@@ -146,14 +146,19 @@ namespace Core.Services.CRUD
                 await userManager.ResetPasswordAsync(user, model.Token!, model.NewPassword);
         }
 
-        public async Task ChangePasswordAsync(ResetPasswordModel model)
+        public async Task ChangePasswordAsync(ChangePasswordModel model)
         {
             var user = await userManager.FindByIdAsync((await authService.GetUserId()).ToString());
 
+
             if (user != null)
             {
-                var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                await userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                var res = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                if (!res.Succeeded)
+                {
+                    throw new Exception("Failed to change password: " + string.Join(", ", res.Errors.Select(e => e.Description)));
+                }
             }
         }
     }

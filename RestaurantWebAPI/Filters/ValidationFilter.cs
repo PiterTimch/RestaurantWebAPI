@@ -6,6 +6,12 @@ namespace RestaurantWebAPI.Filters;
 
 public class ValidationFilter : IAsyncActionFilter
 {
+    private string ToCamelCase(string str)
+    {
+        if (string.IsNullOrEmpty(str) || str.Length < 2) return str;
+        return char.ToLowerInvariant(str[0]) + str.Substring(1);
+    }
+
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         foreach (var argument in context.ActionArguments.Values)
@@ -33,7 +39,7 @@ public class ValidationFilter : IAsyncActionFilter
                             validationResult?.GetType().GetProperty("Errors")?.GetValue(validationResult)!;
 
                         var errorDict = errors
-                            .GroupBy(e => e.PropertyName)
+                            .GroupBy(e => ToCamelCase(e.PropertyName))
                             .ToDictionary(
                                 g => g.Key,
                                 g => g.Select(e => e.ErrorMessage).ToArray()

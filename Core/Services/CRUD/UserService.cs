@@ -189,10 +189,6 @@ public class UserService(UserManager<UserEntity> userManager,
 
         existing = mapper.Map(model, existing);
 
-        //existing.Email = model.Email;
-        //existing.FirstName = model.FirstName;
-        //existing.LastName = model.LastName;
-
         if (model.Image != null) 
         {
             imageService.DeleteImageAsync(existing.Image);

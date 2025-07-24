@@ -92,7 +92,7 @@ namespace RestaurantWebAPI.Controllers
 
         [Authorize]
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ResetPasswordModel model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
             await accountService.ChangePasswordAsync(model);
             return Ok();
