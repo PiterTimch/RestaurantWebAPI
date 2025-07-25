@@ -12,5 +12,5 @@ public interface IUserService
     Task<AdminUserItemModel> GetUserById(int id);
     Task DeleteUser(long id);
     Task<string> SeedAsync(SeedItemsModel model);
-    Task<AdminUserItemModel> EditUserAsync(AdminUserEditModel model);
+    Task<string> EditUserAsync(AdminUserEditModel model);
 }

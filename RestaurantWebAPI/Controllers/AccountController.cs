@@ -115,8 +115,9 @@ namespace RestaurantWebAPI.Controllers
             {
                 var userId = await authService.GetUserId();
                 model.Id = userId;
-                await userService.EditUserAsync(model);
-                return Ok();
+                string res = await userService.EditUserAsync(model);
+
+                return Ok(new { Token = res} );
             }
             catch (Exception ex)
             {

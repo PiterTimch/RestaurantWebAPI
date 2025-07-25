@@ -19,7 +19,8 @@ public class UserService(UserManager<UserEntity> userManager,
     IMapper mapper,
     IImageService imageService,
     RoleManager<RoleEntity> roleManager,
-    AppDbRestaurantContext context) : IUserService
+    AppDbRestaurantContext context,
+    IJWTTokenService tokenService) : IUserService
 {
     public async Task<List<AdminUserItemModel>> GetAllUsersAsync()
     {
@@ -178,7 +179,7 @@ public class UserService(UserManager<UserEntity> userManager,
         return elapsedTime;
     }
 
-    public async Task<AdminUserItemModel> EditUserAsync(AdminUserEditModel model)
+    public async Task<string> EditUserAsync(AdminUserEditModel model)
     {
         var existing = await userManager.FindByIdAsync(model.Id.ToString());
         var userLogins = await context.UserLogins
@@ -204,9 +205,8 @@ public class UserService(UserManager<UserEntity> userManager,
 
         await userManager.UpdateAsync(existing);
 
-        var updatedUser = mapper.Map<AdminUserItemModel>(existing);
-
-        return updatedUser;
+        var jwtToken = await tokenService.CreateTokenAsync(existing);
+        return jwtToken;
     }
 
     public async Task<AdminUserItemModel> GetUserById(int id)

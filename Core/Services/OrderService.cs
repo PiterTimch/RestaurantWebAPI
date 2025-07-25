@@ -189,4 +189,16 @@ public class OrderService(IAuthService authService,
         return orderModelList;
     }
 
+    public async Task<string> GetLastOrderAddress()
+    {
+        var userId = await authService.GetUserId();
+
+        string? lastAddress = await context.DeliveryInfos
+            .Where(x => x.Order.UserId == userId)
+            .OrderByDescending(x => x.Order.DateCreated)
+            .Select(x => $"{x.PostDepartment.Name} {x.PostDepartment.City.Name}")
+            .FirstOrDefaultAsync();
+
+        return lastAddress ?? "-";
+    }
 }

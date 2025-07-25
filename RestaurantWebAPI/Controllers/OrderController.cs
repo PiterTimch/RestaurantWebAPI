@@ -69,5 +69,13 @@ namespace RestaurantWebAPI.Controllers
             var paymentTypes = await orderService.GetAllPaynamentTypes();
             return Ok(paymentTypes);
         }
+
+        [Authorize]
+        [HttpGet("last-order-address")]
+        public async Task<IActionResult> GetLastOrderAddress()
+        {
+            var address = await orderService.GetLastOrderAddress();
+            return Ok(address);
+        }
     }
 }

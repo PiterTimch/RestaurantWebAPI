@@ -11,4 +11,5 @@ public interface IOrderService
     Task<List<CityModel>> GetCities(CitySearchModel model);
     Task<List<PostDepartmentModel>> GetPostDepartments(PostDepartmentSearchModel model);
     Task<List<PaynamentTypeModel>> GetAllPaynamentTypes();
+    Task<string> GetLastOrderAddress();
 }
