@@ -247,19 +247,19 @@ public class ProductService(IMapper mapper,
     public async Task<SearchResult<ProductItemModel>> SearchProductsAsync(ProductSearchModel model)
     {
         var query = context.Products
-            .Where(p => !p.IsDeleted)
+            .Where(p => !p.IsDeleted && p.ParentProduct == null)
             .AsQueryable();
 
         if (!String.IsNullOrEmpty(model.Name)) 
             query = query.Where(p => p.Name.Contains(model.Name));
         if (model.CategoryId.HasValue)
-            query = query.Where(p => p.CategoryId == model.CategoryId.Value || (p.ParentProduct != null && p.ParentProduct.CategoryId == model.CategoryId.Value));
+            query = query.Where(p => p.CategoryId == model.CategoryId.Value);
         if (model.ProductSizeId.HasValue)
             query = query.Where(p => p.ProductSizeId == model.ProductSizeId.Value);
         if (model.MinPrice.HasValue)
-            query = query.Where(p => p.Price >= model.MinPrice.Value);
+            query = query.Where(p => (p.Price != 0 && p.Price >= model.MinPrice.Value) || p.Variants!.Any(x => x.Price >= model.MinPrice.Value));
         if (model.MaxPrice.HasValue)
-            query = query.Where(p => p.Price <= model.MaxPrice.Value);
+            query = query.Where(p => (p.Price != 0 && p.Price <= model.MaxPrice.Value) || p.Variants!.Any(x => x.Price <= model.MaxPrice.Value));
         if (model.ProhibitedIngredientIds != null && model.ProhibitedIngredientIds.Any())
             {
             query = query.Where(p => !p.ProductIngredients
