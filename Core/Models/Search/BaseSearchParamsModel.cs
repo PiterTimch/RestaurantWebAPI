@@ -3,5 +3,5 @@
 public class BaseSearchParamsModel
 {
     public int Page { get; set; } = 1;
-    public int ItemPerPAge { get; set; } = 10;
+    public int ItemPerPage { get; set; } = 10;
 }

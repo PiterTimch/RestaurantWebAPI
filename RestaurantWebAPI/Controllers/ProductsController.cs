@@ -86,8 +86,8 @@ namespace RestaurantWebAPI.Controllers
             return Ok(updatedProduct);
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] ProductSearchModel model)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] ProductSearchModel model)
         {
             var result = await productService.SearchProductsAsync(model);
             return Ok(result);

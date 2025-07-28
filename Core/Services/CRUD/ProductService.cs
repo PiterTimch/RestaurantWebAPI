@@ -268,7 +268,7 @@ public class ProductService(IMapper mapper,
 
         var totalCount = await query.CountAsync();
 
-        var safeItemsPerPage = model.ItemPerPAge < 1 ? 10 : model.ItemPerPAge;
+        var safeItemsPerPage = model.ItemPerPage < 1 ? 10 : model.ItemPerPage;
         var totalPages = (int)Math.Ceiling(totalCount / (double)safeItemsPerPage);
         var safePage = Math.Min(Math.Max(1, model.Page), Math.Max(1, totalPages));
 

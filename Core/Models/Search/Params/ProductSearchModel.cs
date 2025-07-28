@@ -2,7 +2,7 @@
 
 public class ProductSearchModel : BaseSearchParamsModel
 {
-    public string? Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
     public long? CategoryId { get; set; }
     public long? ProductSizeId { get; set; }
     public decimal? MinPrice { get; set; }
