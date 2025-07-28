@@ -6,6 +6,7 @@ using Core.Models.Category;
 using Core.Models.Search;
 using Core.Models.Product;
 using Core.Models.Ingredient;
+using Core.Models.Search.Params;
 
 namespace RestaurantWebAPI.Controllers
 {
@@ -83,6 +84,13 @@ namespace RestaurantWebAPI.Controllers
         {
             var updatedProduct = await productService.UpdateAsync(model);
             return Ok(updatedProduct);
+        }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] ProductSearchModel model)
+        {
+            var result = await productService.SearchProductsAsync(model);
+            return Ok(result);
         }
     }
 }

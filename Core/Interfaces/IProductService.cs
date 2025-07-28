@@ -1,6 +1,8 @@
 ﻿using Core.Models.Ingredient;
 using Core.Models.Product;
 using Core.Models.ProductSize;
+using Core.Models.Search;
+using Core.Models.Search.Params;
 
 namespace Core.Interfaces;
 
@@ -15,4 +17,5 @@ public interface IProductService
     Task<string> DeleteAsync(ProductDeleteModel model);
     Task<ProductItemModel> UpdateAsync(ProductEditModel model);
     Task<IngredientItemModel> UploadIngredient(IngredientCreateModel model);
+    Task<SearchResult<ProductItemModel>> SearchProductsAsync(ProductSearchModel model);
 }

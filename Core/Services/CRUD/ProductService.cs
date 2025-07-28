@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
+using Core.Models.AdminUser;
 using Core.Models.Ingredient;
 using Core.Models.Product;
 using Core.Models.ProductSize;
+using Core.Models.Search;
+using Core.Models.Search.Params;
 using Domain;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -239,5 +242,53 @@ public class ProductService(IMapper mapper,
         await context.SaveChangesAsync();
 
         return mapper.Map<IngredientItemModel>(entity);
+    }
+
+    public async Task<SearchResult<ProductItemModel>> SearchProductsAsync(ProductSearchModel model)
+    {
+        var query = context.Products
+            .Where(p => !p.IsDeleted)
+            .AsQueryable();
+
+        if (!String.IsNullOrEmpty(model.Name)) 
+            query = query.Where(p => p.Name.Contains(model.Name));
+        if (model.CategoryId.HasValue)
+            query = query.Where(p => p.CategoryId == model.CategoryId.Value || (p.ParentProduct != null && p.ParentProduct.CategoryId == model.CategoryId.Value));
+        if (model.ProductSizeId.HasValue)
+            query = query.Where(p => p.ProductSizeId == model.ProductSizeId.Value);
+        if (model.MinPrice.HasValue)
+            query = query.Where(p => p.Price >= model.MinPrice.Value);
+        if (model.MaxPrice.HasValue)
+            query = query.Where(p => p.Price <= model.MaxPrice.Value);
+        if (model.ProhibitedIngredientIds != null && model.ProhibitedIngredientIds.Any())
+            {
+            query = query.Where(p => !p.ProductIngredients
+                .Any(pi => model.ProhibitedIngredientIds.Contains(pi.IngredientId)));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var safeItemsPerPage = model.ItemPerPAge < 1 ? 10 : model.ItemPerPAge;
+        var totalPages = (int)Math.Ceiling(totalCount / (double)safeItemsPerPage);
+        var safePage = Math.Min(Math.Max(1, model.Page), Math.Max(1, totalPages));
+
+        var items = await query
+            .OrderBy(u => u.Id)
+            .Skip((safePage - 1) * safeItemsPerPage)
+            .Take(safeItemsPerPage)
+            .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return new SearchResult<ProductItemModel>
+        {
+            Items = items,
+            Pagination = new PaginationModel
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                ItemsPerPage = safeItemsPerPage,
+                CurrentPage = safePage
+            }
+        };
     }
 }
