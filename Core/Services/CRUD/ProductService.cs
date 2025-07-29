@@ -255,7 +255,7 @@ public class ProductService(IMapper mapper,
         if (model.CategoryId.HasValue)
             query = query.Where(p => p.CategoryId == model.CategoryId.Value);
         if (model.ProductSizeId.HasValue)
-            query = query.Where(p => p.ProductSizeId == model.ProductSizeId.Value);
+            query = query.Where(p => p.ProductSizeId == model.ProductSizeId.Value || p.Variants!.Any(x => x.ProductSizeId == model.ProductSizeId.Value));
         if (model.MinPrice.HasValue)
             query = query.Where(p => (p.Price != 0 && p.Price >= model.MinPrice.Value) || p.Variants!.Any(x => x.Price >= model.MinPrice.Value));
         if (model.MaxPrice.HasValue)
