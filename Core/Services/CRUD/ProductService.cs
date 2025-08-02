@@ -251,7 +251,8 @@ public class ProductService(IMapper mapper,
             .AsQueryable();
 
         if (!String.IsNullOrEmpty(model.Name)) 
-            query = query.Where(p => p.Name.Contains(model.Name));
+            query = query.Where(p => p.Name.ToLower().Contains(model.Name.ToLower()) 
+            || p.Category!.Name.ToLower().Contains(model.Name.ToLower()));
         if (model.CategoryId.HasValue)
             query = query.Where(p => p.CategoryId == model.CategoryId.Value);
         if (model.ProductSizeId.HasValue)
