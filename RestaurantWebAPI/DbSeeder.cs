@@ -189,18 +189,26 @@ public static class DbSeeder
 
             var pizzas = new[]
             {
-                new { Name = "Маргарита", Slug = "margarita", Images = new[] {
-                    "https://aleksandrsann.ks.ua/image/cache/catalog/pizza/updated/margaritta-500x500h.png",
-                    "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-9vv4-p-kartinki-pitstsa-margarita-na-prozrachnom-4.png" }},
+                new { Name = "Гофредо", Slug = "gofredo", Images = new[] {
+                    "https://matsuri.com.ua/img_files/gallery_commerce/products/big/commerce_products_images_296.webp?5878a7ab84fb43402106c575658472fa",
+                    "https://ks.biz.ua/wp-content/uploads/2021/06/gofredo-238x238-1.jpg" },
+                    ingNames = new[] { "Цибуля марс", "Помідор", "Салямі", "Шинка", "Сир Моцарела" }
+                },
                 new { Name = "Пепероні", Slug = "pepperoni", Images = new[] {
                     "https://ecopizza.com.ua/555-large_default/pica-peperoni.jpg",
-                    "https://pizza.od.ua/upload/resize_cache/webp/upload/iblock/62e/4y05ehhgm88eupox5eh111jo1k2e94mq.webp" }},
+                    "https://pizza.od.ua/upload/resize_cache/webp/upload/iblock/62e/4y05ehhgm88eupox5eh111jo1k2e94mq.webp" },
+                    ingNames = new[] { "Сир Пармезан", "Салямі пепероні", "Сир Моцарела", "Соус" }
+                },
                 new { Name = "Гавайська", Slug = "hawaiian", Images = new[] {
                     "https://adriano.com.ua/wp-content/uploads/2022/08/%D0%93%D0%B0%D0%B2%D0%B0%D0%B8%CC%86%D1%81%D1%8C%D0%BA%D0%B0.jpeg",
-                    "https://www.moi-sushi.com.ua/wp-content/uploads/2022/08/gavajska.jpg" }},
+                    "https://www.moi-sushi.com.ua/wp-content/uploads/2022/08/gavajska.jpg" },
+                    ingNames = new[] { "Кукурудза", "Спеції", "Курка", "Сир Моцарела", "Вершки" }
+                },
                 new { Name = "4 Сири", Slug = "4cheese", Images = new[] {
                     "https://ecopizza.com.ua/559-cart_default/picca-4-syra.jpg",
-                    "https://lutsk.samudoma.com.ua/wp-content/uploads/2024/01/4-syry-1.jpg" }},
+                    "https://lutsk.samudoma.com.ua/wp-content/uploads/2024/01/4-syry-1.jpg" },
+                    ingNames = new[] { "Сир вершковий", "Сир Камамбер", "Сир Пармезан", "Сир Моцарела" }
+                },
             };
 
             foreach (var pizza in pizzas)
@@ -210,7 +218,11 @@ public static class DbSeeder
                     Name = pizza.Name,
                     Slug = pizza.Slug,
                     CategoryId = 1,
-                    ProductIngredients = new List<ProductIngredientEntity>()
+                    ProductIngredients = pizza.ingNames
+                        .Select(name => ingredients.FirstOrDefault(ing => ing.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                        .Where(ing => ing != null)
+                        .Select(ing => new ProductIngredientEntity { IngredientId = ing.Id })
+                        .ToList()
                 };
                 context.Products.Add(parent);
                 await context.SaveChangesAsync();
@@ -228,12 +240,13 @@ public static class DbSeeder
                         CategoryId = 1,
                         ProductSizeId = size.Id,
                         ParentProductId = parent.Id,
-                        ProductIngredients = new List<ProductIngredientEntity>(),
+                        ProductIngredients = pizza.ingNames
+                        .Select(name => ingredients.FirstOrDefault(ing => ing.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                        .Where(ing => ing != null)
+                        .Select(ing => new ProductIngredientEntity { IngredientId = ing.Id })
+                        .ToList(),
                         ProductImages = new List<ProductImageEntity>()
                     };
-
-                    foreach (var ingredient in ingredients)
-                        child.ProductIngredients.Add(new ProductIngredientEntity { IngredientId = ingredient.Id });
 
                     foreach (var imageUrl in pizza.Images)
                     {
@@ -243,9 +256,6 @@ public static class DbSeeder
 
                     context.Products.Add(child);
                 }
-
-                foreach (var ingredient in ingredients)
-                    parent.ProductIngredients.Add(new ProductIngredientEntity { IngredientId = ingredient.Id });
 
                 await context.SaveChangesAsync();
             }
@@ -354,7 +364,6 @@ public static class DbSeeder
 
             await context.SaveChangesAsync();
         }
-
 
         if (!context.OrderStatuses.Any())
         {
