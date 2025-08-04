@@ -59,11 +59,10 @@ public class NovaPoshtaService(IMapper mapper, IHttpClientFactory httpClientFact
                     Console.WriteLine($"Add city: {city.Description}");
                 }
 
+                await context.SaveChangesAsync();
                 cities.AddRange(result.Data);
             }
         }
-
-        await context.SaveChangesAsync();
         return cities;
     }
 
@@ -96,11 +95,10 @@ public class NovaPoshtaService(IMapper mapper, IHttpClientFactory httpClientFact
                     Console.WriteLine($"Add post department: {department.Description}");
                 }
 
+                await context.SaveChangesAsync();
                 departments.AddRange(result.Data);
             }
         }
-
-        await context.SaveChangesAsync();
         return departments;
     }
 

@@ -571,10 +571,10 @@ public static class DbSeeder
             await context.SaveChangesAsync();
         }
 
-        //if (!context.PostDepartments.Any())
-        //{
-        //    await novaPosta.FetchDepartmentsAsync();
-        //}
+        if (!context.PostDepartments.Any())
+        {
+            await novaPosta.FetchDepartmentsAsync();
+        }
 
         if (!context.PaymentTypes.Any())
         {
