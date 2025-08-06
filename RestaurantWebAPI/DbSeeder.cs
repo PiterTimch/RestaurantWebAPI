@@ -455,9 +455,9 @@ public static class DbSeeder
                     ingNames = new[] { "Сир Пармезан", "Вершки", "Мідії", "Лосось", "Тигрова креветка", "Спагетті" }
                 },
                 new { Name = "Рамен", Slug = "sup-ramen", Images = new[] {
-                    "https://matsuri.com.ua/img_files/gallery_commerce/products/big/commerce_products_images_71.webp?33e75ff09dd601bbe69f351039152189",
-                    "https://crazycrab.com.ua/image/cache/catalog/maki/%D0%9C%D0%B0%D0%BA%D1%96%20%D1%84%D1%96%D0%BB%D0%B0%D0%B4%D0%B5%D0%BB%D1%8C%D1%84%D1%96%D1%8F2024-700x700.JPG" },
-                    ingNames = new[] { "Норі", "Свинина", "Яйце", "Локшина удон" }
+                    "https://matsuri.com.ua/img_files/gallery_commerce/products/big/commerce_products_images_194.webp?fc221309746013ac554571fbd180e1c8",
+                    "https://www.kikkoman.ru/fileadmin/_processed_/b/e/csm_1101-recipe-page-Authentic-Japanese-soy-sauce-ramen_mobile_c83e83c70c.webp" },
+                    ingNames = new[] { "Свинина", "Яйце", "Локшина удон" }
                 }
             };
 
