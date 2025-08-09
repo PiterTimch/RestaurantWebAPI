@@ -51,6 +51,8 @@ namespace Core.Services.CRUD
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var token = await tokenService.CreateTokenAsync(user);
+                user.IsDeleted = false;
+                await userManager.UpdateAsync(user);
                 return token;
             }
             return string.Empty;
@@ -83,6 +85,8 @@ namespace Core.Services.CRUD
                 }
 
                 var jwtToken = await tokenService.CreateTokenAsync(existingUser);
+                existingUser.IsDeleted = false;
+                await userManager.UpdateAsync(existingUser);
                 return jwtToken;
             }
             else
@@ -102,6 +106,8 @@ namespace Core.Services.CRUD
 
                     await userManager.AddToRoleAsync(user, "User");
                     var jwtToken = await tokenService.CreateTokenAsync(user);
+                    user.IsDeleted = false;
+                    await userManager.UpdateAsync(user);
                     return jwtToken;
                 }
             }

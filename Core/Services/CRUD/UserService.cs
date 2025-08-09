@@ -35,7 +35,7 @@ public class UserService(UserManager<UserEntity> userManager,
 
     public async Task<SearchResult<AdminUserItemModel>> SearchUsersAsync(UserSearchModel model)
     {
-        var query = userManager.Users.AsQueryable();
+        var query = userManager.Users.Where(u => !u.IsDeleted).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(model.Name))
         {
@@ -229,7 +229,9 @@ public class UserService(UserManager<UserEntity> userManager,
 
         if (user != null)
         {
-            await userManager.DeleteAsync(user);
+            user.IsDeleted = true;
+            await userManager.UpdateAsync(user);
+            await context.SaveChangesAsync();
         }
     }
 }
