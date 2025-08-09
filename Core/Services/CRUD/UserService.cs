@@ -183,9 +183,9 @@ public class UserService(UserManager<UserEntity> userManager,
     {
         var existing = await userManager.FindByIdAsync(model.Id.ToString());
         var userLogins = await context.UserLogins
-            .FirstOrDefaultAsync(ul => ul.UserId == existing.Id);
+            .FirstOrDefaultAsync(ul => ul.UserId == existing!.Id);
 
-        if (userLogins != null && userLogins.LoginProvider == "Google")
+        if (userLogins != null && userLogins.LoginProvider == "Google" && existing!.Email != model.Email)
             throw new InvalidOperationException("Cannot edit email for Google login user");
 
         existing = mapper.Map(model, existing);

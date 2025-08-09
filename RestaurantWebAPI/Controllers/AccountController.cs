@@ -117,12 +117,20 @@ namespace RestaurantWebAPI.Controllers
                 model.Id = userId;
                 string res = await userService.EditUserAsync(model);
 
-                return Ok(new { Token = res} );
+                return Ok(new { Token = res });
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [Authorize]
+        [HttpGet("has-password")]
+        public async Task<IActionResult> HasPassword()
+        {
+            bool hasPassword = await accountService.HasPasswordAsync();
+            return Ok(new { HasPassword = hasPassword });
         }
     }
 }
