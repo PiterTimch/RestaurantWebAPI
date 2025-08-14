@@ -40,7 +40,8 @@ public class OederMapper : Profile
             .MapFrom(src => src.PostDepartment.City));
 
 
-        CreateMap<CityEntity, CityModel>();
+        CreateMap<CityEntity, CityModel>()
+            .ForMember(x => x.DepartmentCount, opt => opt.MapFrom(y => y.PostDepartments.Count()));
         CreateMap<PostDepartmentEntity, PostDepartmentModel>();
         CreateMap<PaymentTypeEntity, PaynamentTypeModel>();
     }

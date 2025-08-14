@@ -11,6 +11,7 @@ using Domain.Entities.Delivery;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Core.Services;
 
@@ -123,7 +124,7 @@ public class OrderService(IAuthService authService,
 
     public async Task<List<CityModel>> GetCities(CitySearchModel model)
     {
-        var query = context.Cities.AsQueryable();
+       var query = context.Cities.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(model.Name))
         {
@@ -144,6 +145,7 @@ public class OrderService(IAuthService authService,
 
         var cities = await query
             .ProjectTo<CityModel>(mapper.ConfigurationProvider)
+            .OrderByDescending(c => c.DepartmentCount)
             .Take(model.ItemPerPage)
             .ToListAsync();
 
@@ -166,7 +168,19 @@ public class OrderService(IAuthService authService,
 
         if (!string.IsNullOrEmpty(model.CityName))
         {
-            query = query.Where(pd => pd.City!.Name.ToLower().Contains(model.CityName.ToLower()));
+            var search = model.CityName.Trim().ToLower();
+
+            query = query.Where(c =>
+                c.City.Name.ToLower() == search ||
+                c.City.Name.ToLower().StartsWith(search) ||
+                c.City.Name.ToLower().Contains(" " + search)
+            );
+
+            query = query.OrderBy(c =>
+                c.City.Name.ToLower() == search ? 0 :
+                c.City.Name.ToLower().StartsWith(search) ? 1 :
+                c.City.Name.ToLower().Contains(" " + search) ? 2 : 3
+            );
         }
 
         var postDepartments = query
