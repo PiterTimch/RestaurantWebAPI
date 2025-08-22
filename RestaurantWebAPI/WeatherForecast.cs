@@ -1,6 +1,6 @@
 namespace RestaurantWebAPI
 {
-    //for test
+    //for test 2
     public class WeatherForecast
     {
         public DateOnly Date { get; set; }
