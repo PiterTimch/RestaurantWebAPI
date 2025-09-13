@@ -14,6 +14,7 @@ using Core.Services.CRUD;
 using System.Text;
 using Core.Models.Account;
 using Core.Extensions;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +122,12 @@ builder.Services.AddMvc(options =>
 });
 
 builder.Services.AddCors();
+
+builder.Services.AddQuartz();
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
 
 var app = builder.Build();
 
