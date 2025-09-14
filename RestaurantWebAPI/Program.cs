@@ -1,3 +1,9 @@
+using Core.Extensions;
+using Core.Interfaces;
+using Core.Models.Account;
+using Core.Services;
+using Core.Services.CRUD;
+using Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -5,16 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RestaurantWebAPI;
-using Domain;
-using RestaurantWebAPI.Filters;
-using Core.Interfaces;
-using Core.Services;
-using Core.Services.CRUD;
-using System.Text;
-using Core.Models.Account;
-using Core.Extensions;
 using Quartz;
+using RestaurantWebAPI;
+using RestaurantWebAPI.Filters;
+using RestaurantWebAPI.Jobs;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,7 @@ builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INovaPoshtaService, NovaPoshtaService>();
+builder.Services.AddScoped<IDbSeeder, DbSeeder>();
 
 builder.Services.AddHttpClient();
 
@@ -123,7 +125,15 @@ builder.Services.AddMvc(options =>
 
 builder.Services.AddCors();
 
-builder.Services.AddQuartz();
+builder.Services.AddQuartz(q => {
+    var jobKey = new JobKey("DbSeedJob");
+    q.AddJob<DbSeedJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("DbSeedJob-trigger")
+        .StartNow());
+});
 builder.Services.AddQuartzHostedService(options =>
 {
     options.WaitForJobsToComplete = true;
@@ -152,6 +162,6 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = $"/{dir}"
 });
 
-await app.SeedData();
+//await app.SeedData();
 
 app.Run();

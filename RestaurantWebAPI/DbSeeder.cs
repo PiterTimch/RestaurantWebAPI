@@ -13,11 +13,11 @@ using Domain.Entities.Delivery;
 
 namespace RestaurantWebAPI;
 
-public static class DbSeeder
+public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
 {
-    public static async Task SeedData(this WebApplication webApplication)
+    public async Task SeedData()
     {
-        using var scope = webApplication.Services.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         //Цей об'єкт буде верта посилання на конткетс, який зараєстрвоано в Progran.cs
         var context = scope.ServiceProvider.GetRequiredService<AppDbRestaurantContext>();
         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
