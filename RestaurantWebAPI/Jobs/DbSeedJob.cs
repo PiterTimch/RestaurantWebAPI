@@ -1,4 +1,5 @@
-﻿using Quartz;
+﻿using Core;
+using Quartz;
 
 namespace RestaurantWebAPI.Jobs;
 

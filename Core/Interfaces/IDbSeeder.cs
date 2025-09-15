@@ -1,4 +1,4 @@
-﻿namespace RestaurantWebAPI;
+﻿namespace Core;
 
 public interface IDbSeeder
 {

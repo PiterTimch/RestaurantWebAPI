@@ -8,10 +8,10 @@ using Domain.Entities.Identity;
 using Core.Interfaces;
 using Core.Models.Seeder;
 using System.Text.Json;
-using Core.Models.ProductImage;
 using Domain.Entities.Delivery;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RestaurantWebAPI;
+namespace Core;
 
 public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
 {
