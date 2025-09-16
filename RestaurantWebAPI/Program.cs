@@ -127,12 +127,12 @@ builder.Services.AddMvc(options =>
 builder.Services.AddCors();
 
 builder.Services.AddQuartz(q => {
-    var jobKey = new JobKey("DbSeedJob");
+    var jobKey = new JobKey(nameof(DbSeedJob));
     q.AddJob<DbSeedJob>(opts => opts.WithIdentity(jobKey));
 
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
-        .WithIdentity("DbSeedJob-trigger")
+        .WithIdentity($"{nameof(DbSeedJob)}-trigger")
         .StartNow());
 });
 builder.Services.AddQuartzHostedService(options =>
