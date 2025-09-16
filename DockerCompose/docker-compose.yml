@@ -1,0 +1,46 @@
+version: "3.9"
+networks:
+  myAppNetwork:
+    driver: bridge
+
+services:
+  db:
+    container_name: pg-container
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: autoAtbDb
+    volumes:
+      - /data/rest/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - myAppNetwork
+    restart: unless-stopped
+
+  app:
+    container_name: restaurant-web-api-container
+    image: pedro007salo/restaurant-web-api:latest
+    ports:
+      - "5801:8080"  
+    networks:
+      - myAppNetwork
+    volumes:
+      - /data/rest/images:/app/images
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    environment:
+        ConnectionStrings__DefaultConnection: "Host=db;Database=autoAtbDb;Username=postgres;Password=postgres"
+
+  client:
+    container_name: my-react-ts-container
+    image: pedro007salo/my-react-ts:latest
+    restart: on-failure
+    ports:
+      - "4080:80"  
+    networks:
+      - myAppNetwork
+
