@@ -571,11 +571,6 @@ public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
             await context.SaveChangesAsync();
         }
 
-        if (!context.PostDepartments.Any())
-        {
-            await novaPosta.FetchDepartmentsAsync();
-        }
-
         if (!context.PaymentTypes.Any())
         {
             var list = new List<PaymentTypeEntity>
@@ -586,6 +581,11 @@ public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
 
             await context.PaymentTypes.AddRangeAsync(list);
             await context.SaveChangesAsync();
+        }
+
+        if (!context.PostDepartments.Any())
+        {
+            await novaPosta.FetchDepartmentsAsync();
         }
 
     }
