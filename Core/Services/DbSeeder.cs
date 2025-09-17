@@ -27,6 +27,18 @@ public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
 
         context.Database.Migrate();
 
+        if (!context.PaymentTypes.Any())
+        {
+            var list = new List<PaymentTypeEntity>
+            {
+                new PaymentTypeEntity { Name = "Готівка" },
+                new PaymentTypeEntity { Name = "Картка" }
+            };
+
+            await context.PaymentTypes.AddRangeAsync(list);
+            await context.SaveChangesAsync();
+        }
+
         if (!context.Categories.Any())
         {
             var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
@@ -568,18 +580,6 @@ public class DbSeeder(IServiceProvider serviceProvider) : IDbSeeder
                 context.OrderItems.AddRange(orderItems);
             }
 
-            await context.SaveChangesAsync();
-        }
-
-        if (!context.PaymentTypes.Any())
-        {
-            var list = new List<PaymentTypeEntity>
-            {
-                new PaymentTypeEntity { Name = "Готівка" },
-                new PaymentTypeEntity { Name = "Картка" }
-            };
-
-            await context.PaymentTypes.AddRangeAsync(list);
             await context.SaveChangesAsync();
         }
 
